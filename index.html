@@ -489,7 +489,8 @@
                 const isRange = multa.multa.includes("-");
 
                 if (isRange) {
-                    const [min, max] = multa.multa.replace("€", "").split("-").map(Number);
+                    // Extraer rango mínimo y máximo del texto
+                    const [min, max] = multa.multa.replace("€", "").split("-").map(num => parseInt(num.trim(), 10));
                     div.innerHTML = `
                         ${multa.articulo} - ${multa.descripcion}:
                         <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />

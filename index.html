@@ -100,7 +100,7 @@
                     const div = document.createElement("div");
                     div.className = "result-item";
                     div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                    div.onclick = () => agregarAlPortapapeles(multa);
+                    div.onclick = () => toggleMultaEnPortapapeles(multa);
                     resultsContainer.appendChild(div);
                 });
             }
@@ -119,7 +119,7 @@
                         const div = document.createElement("div");
                         div.className = "result-item";
                         div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                        div.onclick = () => agregarAlPortapapeles(multa);
+                        div.onclick = () => toggleMultaEnPortapapeles(multa);
                         resultsContainer.appendChild(div);
                     });
                 } else {
@@ -127,23 +127,33 @@
                 }
             }
 
-            function agregarAlPortapapeles(multa) {
-                portapapeles.push(multa);
+            function toggleMultaEnPortapapeles(multa) {
+                const index = portapapeles.findIndex(item => item.articulo === multa.articulo);
+                if (index !== -1) {
+                    // Si ya está en el portapapeles, elimínala
+                    portapapeles.splice(index, 1);
+                } else {
+                    // Si no está, agrégala
+                    portapapeles.push(multa);
+                }
                 actualizarPortapapeles();
             }
 
             function actualizarPortapapeles() {
                 clipboardContainer.innerHTML = "<h2>Portapapeles</h2>";
 
-                portapapeles.forEach(multa => {
-                    const div = document.createElement("div");
-                    div.className = "clipboard-item";
-                    div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                    clipboardContainer.appendChild(div);
-                });
+                if (portapapeles.length === 0) {
+                    clipboardContainer.innerHTML += "<p>No hay multas en el portapapeles.</p>";
+                } else {
+                    portapapeles.forEach(multa => {
+                        const div = document.createElement("div");
+                        div.className = "clipboard-item";
+                        div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                        clipboardContainer.appendChild(div);
+                    });
+                }
             }
 
-            // Botón para desplazarse al portapapeles
             const gotoClipboardButton = document.getElementById("goto-clipboard");
             gotoClipboardButton.addEventListener("click", () => {
                 document.getElementById("clipboard").scrollIntoView({ behavior: "smooth" });
@@ -151,7 +161,6 @@
 
             searchInput.addEventListener("input", buscarMultas);
 
-            // Mostrar todas las multas al cargar la página
             mostrarTodasLasMultas();
         });
     </script>
@@ -172,7 +181,7 @@
 
     <div id="clipboard" class="clipboard">
         <h2>Portapapeles</h2>
-        <!-- Multas seleccionadas aparecerán aquí -->
+        <p>No hay multas en el portapapeles.</p>
     </div>
 </body>
 </html>

@@ -84,11 +84,19 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const multas = Array.from({ length: 1000 }, (_, i) => ({
-                articulo: `Art. ${i + 1}`,
-                descripcion: `Descripción de la infracción ${i + 1}`,
-                multa: Math.floor(Math.random() * 1000) + 50
-            }));
+            const multas = [
+                { articulo: "Art. 1", descripcion: "Uso excesivo de claxon", multa: 200 },
+                { articulo: "Art. 2", descripcion: "Giro indebido", multa: 250 },
+                { articulo: "Art. 3", descripcion: "Cambio de carril en línea continua", multa: 275 },
+                { articulo: "Art. 4", descripcion: "Circular en sentido contrario", multa: 400 },
+                { articulo: "Art. 5", descripcion: "Estacionar de manera incorrecta", multa: 150 },
+                { articulo: "Art. 6", descripcion: "Obstruir la circulación", multa: 300 },
+                { articulo: "Art. 7", descripcion: "Saltarse un STOP", multa: 225 },
+                { articulo: "Art. 8", descripcion: "Saltarse un semáforo", multa: 300 },
+                { articulo: "Art. 9", descripcion: "No ceder el paso a vehículos de emergencia", multa: 1250 },
+                { articulo: "Art. 10", descripcion: "Realizar un adelantamiento indebido", multa: 325 },
+                // Agrega más artículos si lo necesitas...
+            ];
 
             const PAGE_SIZE = 50;
 

@@ -5,38 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
-        :root {
-            --bg-color: #e0e0e0;
-            --text-color: #222;
-            --card-bg: #f5f5f5;
-            --card-shadow: rgba(0, 0, 0, 0.1);
-            --header-bg: #3a7bd5;
-            --header-text: #fff;
-            --button-bg: #3a7bd5;
-            --button-text: #fff;
-            --button-hover: #2b5ca8;
-        }
-        [data-theme="dark"] {
-            --bg-color: #2e2e2e;
-            --text-color: #dcdcdc;
-            --card-bg: #424242;
-            --card-shadow: rgba(255, 255, 255, 0.1);
-            --header-bg: #5a95e8;
-            --header-text: #fff;
-            --button-bg: #5a95e8;
-            --button-text: #fff;
-            --button-hover: #4677c4;
-        }
         body {
             font-family: Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
         .header {
-            background-color: var(--header-bg);
-            color: var(--header-text);
+            background-color: #0044cc;
+            color: white;
             padding: 10px;
             text-align: center;
         }
@@ -53,40 +30,23 @@
             margin-right: 10px;
         }
         .goto-clipboard {
-            background-color: var(--button-bg);
-            color: var(--button-text);
+            background-color: #0044cc;
+            color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
         }
         .goto-clipboard:hover {
-            background-color: var(--button-hover);
-        }
-        .theme-toggle {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--button-bg);
-            color: var(--button-text);
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .theme-toggle:hover {
-            background-color: var(--button-hover);
+            background-color: #0033aa;
         }
         .results {
             margin: 20px;
             padding: 20px;
-            background: var(--card-bg);
+            background: white;
             border-radius: 5px;
-            box-shadow: 0 2px 5px var(--card-shadow);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .result-item {
             margin-bottom: 10px;
@@ -112,43 +72,22 @@
         .clipboard {
             margin: 20px;
             padding: 20px;
-            background: var(--card-bg);
+            background: #e9ffe9;
             border-radius: 5px;
-            box-shadow: 0 2px 5px var(--card-shadow);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .clipboard h2 {
             margin-top: 0;
         }
-        .clipboard-section {
-            margin-bottom: 20px;
-        }
         .clipboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 10px;
-            padding: 10px;
-            background-color: var(--card-bg);
-            border-radius: 3px;
-            border: 1px solid #ddd;
-        }
-        .clipboard-item button {
-            background-color: var(--button-bg);
-            color: var(--button-text);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-        .clipboard-item button:hover {
-            background-color: var(--button-hover);
         }
         .copy-button {
             display: block;
             margin: 10px auto;
             padding: 10px 20px;
-            background-color: var(--button-bg);
-            color: var(--button-text);
+            background-color: #0044cc;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -156,7 +95,7 @@
             text-align: center;
         }
         .copy-button:hover {
-            background-color: var(--button-hover);
+            background-color: #0033aa;
         }
     </style>
     <script>
@@ -484,25 +423,106 @@
             ];
 
             const resultsContainer = document.getElementById("results");
-            const clipboardPendientes = document.getElementById("clipboard-pendientes");
-            const clipboardPagadas = document.getElementById("clipboard-pagadas");
+            const searchInput = document.getElementById("search-input");
             const clipboardContainer = document.getElementById("clipboard-content");
-            const gotoClipboard = document.getElementById("goto-clipboard");
             const copyButton = document.getElementById("copy-button");
-            const themeToggle = document.getElementById("theme-toggle");
 
             let clipboard = new Map();
 
             function mostrarMultas(query = "") {
-                // Código similar al anterior para mostrar multas
+                resultsContainer.innerHTML = "";
+
+                const filteredMultas = multas.filter(multa =>
+                    multa.articulo.toLowerCase().includes(query) ||
+                    multa.descripcion.toLowerCase().includes(query)
+                );
+
+                if (filteredMultas.length === 0) {
+                    resultsContainer.textContent = "No se encontraron resultados.";
+                } else {
+                    filteredMultas.forEach(multa => {
+                        const div = document.createElement("div");
+                        div.className = "result-item";
+
+                        if (multa.multa.includes("-")) {
+                            const [min, max] = multa.multa.replace("€", "").split("-").map(v => parseInt(v.trim(), 10));
+                            div.innerHTML = `
+                                ${multa.articulo} - ${multa.descripcion}: 
+                                <input type="number" placeholder="${min}-${max}" min="${min}" max="${max}" />
+                                <button>Agregar</button>
+                            `;
+                            const input = div.querySelector("input");
+                            const button = div.querySelector("button");
+                            button.addEventListener("click", () => {
+                                const importe = input.value;
+                                const key = `${multa.articulo} - ${multa.descripcion}`;
+                                if (importe >= min && importe <= max) {
+                                    if (!clipboard.has(key)) {
+                                        clipboard.set(key, `${key}: ${importe} €`);
+                                        div.classList.add("selected");
+                                        actualizarClipboard();
+                                    } else {
+                                        alert("Esta multa ya está en el portapapeles.");
+                                    }
+                                } else {
+                                    alert(`Introduce un valor válido entre ${min} y ${max}.`);
+                                }
+                            });
+                        } else {
+                            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                            div.addEventListener("click", () => toggleClipboard(div, multa));
+                        }
+
+                        resultsContainer.appendChild(div);
+                    });
+                }
+            }
+
+            function toggleClipboard(element, multa) {
+                const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                if (clipboard.has(key)) {
+                    clipboard.delete(key);
+                    element.classList.remove("selected");
+                } else {
+                    clipboard.set(key, key);
+                    element.classList.add("selected");
+                }
+                actualizarClipboard();
             }
 
             function actualizarClipboard() {
-                // Código similar al anterior pero separando en pagadas y pendientes
+                clipboardContainer.innerHTML = "";
+
+                if (clipboard.size === 0) {
+                    clipboardContainer.textContent = "No hay multas seleccionadas.";
+                } else {
+                    clipboard.forEach(item => {
+                        const div = document.createElement("div");
+                        div.className = "clipboard-item";
+                        div.textContent = item;
+                        clipboardContainer.appendChild(div);
+                    });
+                }
             }
 
-            gotoClipboard.addEventListener("click", () => {
-                document.getElementById("clipboard").scrollIntoView({ behavior: "smooth" });
+            function copiarAlPortapapeles() {
+                const texto = Array.from(clipboard.values()).join("\n");
+                if (texto) {
+                    navigator.clipboard.writeText(texto).then(() => {
+                        alert("Contenido copiado al portapapeles.");
+                    }).catch(err => {
+                        console.error("Error al copiar al portapapeles:", err);
+                    });
+                } else {
+                    alert("No hay contenido para copiar.");
+                }
+            }
+
+            copyButton.addEventListener("click", copiarAlPortapapeles);
+
+            searchInput.addEventListener("input", () => {
+                const query = searchInput.value.toLowerCase();
+                mostrarMultas(query);
             });
 
             mostrarMultas();
@@ -513,23 +533,22 @@
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
     </div>
-    <button id="theme-toggle" class="theme-toggle">Cambiar tema</button>
+
     <div class="search-container">
-        <input id="search-input" type="text" placeholder="Buscar multas..." />
+        <input type="text" id="search-input" placeholder="Buscar...">
+        <button class="goto-clipboard" onclick="document.getElementById('clipboard').scrollIntoView()">Ir al portapapeles</button>
     </div>
-    <div id="results" class="results"></div>
+
+    <div id="results" class="results">
+        <!-- Resultados aparecerán aquí -->
+    </div>
+
     <div id="clipboard" class="clipboard">
         <h2>Portapapeles</h2>
-        <div id="clipboard-pendientes" class="clipboard-section">
-            <h3>Multas Pendientes</h3>
-            <div id="pendientes-content"></div>
+        <div id="clipboard-content">
+            No hay multas seleccionadas.
         </div>
-        <div id="clipboard-pagadas" class="clipboard-section">
-            <h3>Multas Pagadas</h3>
-            <div id="pagadas-content"></div>
-        </div>
-        <button id="copy-button" class="copy-button">Copiar al portapapeles</button>
+        <button id="copy-button" class="copy-button">Copiar Portapapeles</button>
     </div>
-    <button id="goto-clipboard" class="goto-clipboard">Ir al portapapeles</button>
 </body>
 </html>

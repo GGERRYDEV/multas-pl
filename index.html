@@ -14,30 +14,30 @@
         .header {
             background-color: #0044cc;
             color: white;
+            padding: 20px;
             text-align: center;
             position: relative;
-            height: 180px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
         .calculadora-container {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 140px;
-            height: 140px;
-            background-color: white;
-            border-radius: 15px;
+            top: 10px;
+            right: 10px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .calculadora-container img {
-            width: 80%;
-            height: auto;
+            width: 60px;
+            height: 60px;
+            margin-right: 10px;
+        }
+        .calculadora-container span {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0044cc;
         }
         .search-container {
             display: flex;
@@ -51,18 +51,6 @@
             font-size: 16px;
             margin-right: 10px;
         }
-        .goto-clipboard {
-            background-color: #0044cc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .goto-clipboard:hover {
-            background-color: #0033aa;
-        }
         .results {
             margin: 20px;
             padding: 20px;
@@ -75,27 +63,15 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 3px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             transition: background-color 0.3s, border-color 0.3s;
         }
-        .result-item input[type="number"] {
-            width: 80px;
-            padding: 5px;
+        .result-item input {
             margin-left: 10px;
+            width: 100px;
         }
         .result-item button {
             margin-left: 10px;
             padding: 5px 10px;
-            border: none;
-            background-color: #0044cc;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .result-item button:hover {
-            background-color: #0033aa;
         }
         .result-item:hover {
             background-color: #f0f0f0;
@@ -115,24 +91,21 @@
             margin-top: 0;
         }
         .clipboard-item {
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
         }
-        .delete-button {
-            background-color: #cc0000;
+        .clipboard-item button {
+            background-color: red;
             color: white;
             border: none;
             padding: 5px 10px;
             border-radius: 5px;
             cursor: pointer;
         }
-        .delete-button:hover {
-            background-color: #990000;
+        .clipboard-item button:hover {
+            background-color: darkred;
         }
         .copy-button {
             display: block;
@@ -160,12 +133,11 @@
     </div>
     <div class="search-container">
         <input id="search-input" type="text" placeholder="Buscar multas..." />
-        <button class="goto-clipboard" onclick="document.getElementById('clipboard').scrollIntoView()">Ir al portapapeles</button>
     </div>
     <div id="results" class="results"></div>
     <div id="clipboard" class="clipboard">
         <h2>Portapapeles</h2>
-        <div id="clipboard-content">No hay multas seleccionadas.</div>
+        <div id="clipboard-content"></div>
         <button id="copy-button" class="copy-button">Copiar al portapapeles</button>
     </div>
 
@@ -494,10 +466,8 @@
             ];
 
             const resultsContainer = document.getElementById("results");
-            const searchInput = document.getElementById("search-input");
             const clipboardContainer = document.getElementById("clipboard-content");
             const copyButton = document.getElementById("copy-button");
-
             let clipboard = new Map();
 
             function mostrarMultas(query = "") {
@@ -516,19 +486,31 @@
                         div.className = "result-item";
 
                         if (multa.editable) {
+                            const [min, max] = multa.descripcion.match(/\d+/g).map(Number);
                             div.innerHTML = `
-                                ${multa.articulo} - ${multa.descripcion}: 
-                                <input type="number" value="${parseInt(multa.multa)}" />
+                                ${multa.articulo} - ${multa.descripcion}
+                                <input type="number" placeholder="${min}-${max}" min="${min}" max="${max}" />
                                 <button>Agregar</button>
                             `;
+                            const input = div.querySelector("input");
                             const button = div.querySelector("button");
                             button.addEventListener("click", () => {
-                                const input = div.querySelector("input");
-                                multa.multa = `${input.value} €`;
-                                toggleClipboard(div, multa);
+                                const importe = input.value;
+                                const key = `${multa.articulo} - ${multa.descripcion}`;
+                                if (importe >= min && importe <= max) {
+                                    if (!clipboard.has(key)) {
+                                        clipboard.set(key, `${key}: ${importe} €`);
+                                        div.classList.add("selected");
+                                        actualizarClipboard();
+                                    } else {
+                                        alert("Esta multa ya está en el portapapeles.");
+                                    }
+                                } else {
+                                    alert(`Introduce un valor válido entre ${min} y ${max}.`);
+                                }
                             });
                         } else {
-                            div.innerHTML = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
                             div.addEventListener("click", () => toggleClipboard(div, multa));
                         }
 
@@ -555,41 +537,40 @@
                 if (clipboard.size === 0) {
                     clipboardContainer.textContent = "No hay multas seleccionadas.";
                 } else {
-                    clipboard.forEach(item => {
+                    clipboard.forEach((item, key) => {
                         const div = document.createElement("div");
                         div.className = "clipboard-item";
-                        div.innerHTML = `
-                            ${item}
-                            <button class="delete-button">Eliminar</button>
-                        `;
-                        const deleteButton = div.querySelector(".delete-button");
-                        deleteButton.addEventListener("click", () => {
-                            clipboard.delete(item);
+                        div.innerHTML = `${item} <button data-key="${key}">Eliminar</button>`;
+                        const button = div.querySelector("button");
+                        button.addEventListener("click", () => {
+                            clipboard.delete(key);
                             actualizarClipboard();
-                            const elements = document.querySelectorAll(".result-item");
-                            elements.forEach(el => {
-                                if (el.textContent.includes(item)) {
-                                    el.classList.remove("selected");
-                                }
-                            });
+                            const resultItem = [...resultsContainer.children].find(el =>
+                                el.textContent.includes(key.split(":")[0])
+                            );
+                            if (resultItem) resultItem.classList.remove("selected");
                         });
                         clipboardContainer.appendChild(div);
                     });
                 }
             }
 
-            copyButton.addEventListener("click", () => {
+            function copiarAlPortapapeles() {
                 const texto = Array.from(clipboard.values()).join("\n");
                 if (texto) {
                     navigator.clipboard.writeText(texto).then(() => {
                         alert("Contenido copiado al portapapeles.");
+                    }).catch(err => {
+                        console.error("Error al copiar al portapapeles:", err);
                     });
                 } else {
                     alert("No hay contenido para copiar.");
                 }
-            });
+            }
 
-            searchInput.addEventListener("input", () => {
+            copyButton.addEventListener("click", copiarAlPortapapeles);
+
+            document.getElementById("search-input").addEventListener("input", () => {
                 const query = searchInput.value.toLowerCase();
                 mostrarMultas(query);
             });

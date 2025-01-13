@@ -16,31 +16,30 @@
             color: white;
             padding: 10px;
             text-align: center;
-            position: relative;
-        }
-        .goto-clipboard {
-            position: absolute;
-            right: 10px;
-            top: 10px;
-            background-color: white;
-            color: #0044cc;
-            border: 1px solid #0044cc;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .goto-clipboard:hover {
-            background-color: #f0f0f0;
         }
         .search-container {
             display: flex;
             justify-content: center;
+            align-items: center;
             margin: 20px;
         }
         .search-container input {
             width: 300px;
             padding: 10px;
             font-size: 16px;
+            margin-right: 10px;
+        }
+        .goto-clipboard {
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .goto-clipboard:hover {
+            background-color: #0033aa;
         }
         .results {
             margin: 20px;
@@ -424,10 +423,11 @@
             ];
 
             const resultsContainer = document.getElementById("results");
+            const searchInput = document.getElementById("search-input");
             const clipboardContainer = document.getElementById("clipboard-content");
             const copyButton = document.getElementById("copy-button");
 
-            let clipboard = new Set();
+            let clipboard = new Map();
 
             function mostrarMultas(query = "") {
                 resultsContainer.innerHTML = "";
@@ -456,14 +456,21 @@
                             button.addEventListener("click", () => {
                                 const importe = input.value;
                                 if (importe >= min && importe <= max) {
-                                    agregarAlPortapapeles(`${multa.articulo} - ${multa.descripcion}: ${importe} €`);
+                                    const key = `${multa.articulo} - ${multa.descripcion}`;
+                                    if (!clipboard.has(key)) {
+                                        clipboard.set(key, `${key}: ${importe} €`);
+                                        div.classList.add("selected");
+                                        actualizarClipboard();
+                                    } else {
+                                        alert("Esta multa ya está en el portapapeles.");
+                                    }
                                 } else {
                                     alert(`Introduce un valor válido entre ${min} y ${max}.`);
                                 }
                             });
                         } else {
                             div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                            div.addEventListener("click", () => toggleClipboard(multa));
+                            div.addEventListener("click", () => toggleClipboard(div, multa));
                         }
 
                         resultsContainer.appendChild(div);
@@ -471,18 +478,15 @@
                 }
             }
 
-            function toggleClipboard(multa) {
+            function toggleClipboard(element, multa) {
                 const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
                 if (clipboard.has(key)) {
                     clipboard.delete(key);
+                    element.classList.remove("selected");
                 } else {
-                    clipboard.add(key);
+                    clipboard.set(key, key);
+                    element.classList.add("selected");
                 }
-                actualizarClipboard();
-            }
-
-            function agregarAlPortapapeles(item) {
-                clipboard.add(item);
                 actualizarClipboard();
             }
 
@@ -502,7 +506,7 @@
             }
 
             function copiarAlPortapapeles() {
-                const texto = Array.from(clipboard).join("\n");
+                const texto = Array.from(clipboard.values()).join("\n");
                 if (texto) {
                     navigator.clipboard.writeText(texto).then(() => {
                         alert("Contenido copiado al portapapeles.");
@@ -516,6 +520,11 @@
 
             copyButton.addEventListener("click", copiarAlPortapapeles);
 
+            searchInput.addEventListener("input", () => {
+                const query = searchInput.value.toLowerCase();
+                mostrarMultas(query);
+            });
+
             mostrarMultas();
         });
     </script>
@@ -523,11 +532,11 @@
 <body>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
-        <button class="goto-clipboard" onclick="document.getElementById('clipboard').scrollIntoView()">Ir al portapapeles</button>
     </div>
 
     <div class="search-container">
         <input type="text" id="search-input" placeholder="Buscar...">
+        <button class="goto-clipboard" onclick="document.getElementById('clipboard').scrollIntoView()">Ir al portapapeles</button>
     </div>
 
     <div id="results" class="results">

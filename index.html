@@ -17,19 +17,16 @@
             padding: 20px;
             text-align: center;
             position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
-        .calculadora-container {
-            background-color: white;
-            padding: 10px;
+        .header img {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 120px;
+            height: 120px;
+            background: white;
             border-radius: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .calculadora-container img {
-            width: 100px;
-            height: 100px;
+            padding: 5px;
         }
         .search-container {
             display: flex;
@@ -119,9 +116,7 @@
 <body>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
-        <div class="calculadora-container">
-            <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Icono" />
-        </div>
+        <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
     </div>
     <div class="search-container">
         <input id="search-input" type="text" placeholder="Buscar multas..." />
@@ -477,7 +472,7 @@
                         const div = document.createElement("div");
                         div.className = "result-item";
 
-                        if (multa.editable) {
+                        if (multa.descripcion.includes("-")) {
                             const [min, max] = multa.descripcion.match(/\d+/g).map(Number);
                             div.innerHTML = `
                                 ${multa.articulo} - ${multa.descripcion}
@@ -487,22 +482,22 @@
                             const input = div.querySelector("input[type='number']");
                             const button = div.querySelector("button");
                             button.addEventListener("click", () => {
-                                const importe = input.value;
-                                const key = `${multa.articulo} - ${multa.descripcion}`;
+                                const importe = parseFloat(input.value);
                                 if (importe >= min && importe <= max) {
+                                    const key = `${multa.articulo} - ${importe}€`;
                                     if (!clipboard.has(key)) {
-                                        clipboard.set(key, `${key}: ${importe} €`);
+                                        clipboard.set(key, key);
                                         div.classList.add("selected");
                                         actualizarClipboard();
                                     } else {
                                         alert("Esta multa ya está en el portapapeles.");
                                     }
                                 } else {
-                                    alert(`Introduce un valor válido entre ${min} y ${max}.`);
+                                    alert(`Introduce un valor entre ${min} y ${max}.`);
                                 }
                             });
                         } else {
-                            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                            div.textContent = `${multa.articulo} - ${multa.descripcion}`;
                             div.addEventListener("click", () => toggleClipboard(div, multa));
                         }
 
@@ -512,7 +507,7 @@
             }
 
             function toggleClipboard(element, multa) {
-                const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                const key = `${multa.articulo} - ${multa.descripcion}`;
                 if (clipboard.has(key)) {
                     clipboard.delete(key);
                     element.classList.remove("selected");
@@ -538,7 +533,7 @@
                             clipboard.delete(key);
                             actualizarClipboard();
                             const resultItem = [...resultsContainer.children].find(el =>
-                                el.textContent.includes(key.split(":")[0])
+                                el.textContent.includes(key.split("-")[0])
                             );
                             if (resultItem) resultItem.classList.remove("selected");
                         });

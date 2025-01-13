@@ -455,8 +455,8 @@
                             const button = div.querySelector("button");
                             button.addEventListener("click", () => {
                                 const importe = input.value;
+                                const key = `${multa.articulo} - ${multa.descripcion}`;
                                 if (importe >= min && importe <= max) {
-                                    const key = `${multa.articulo} - ${multa.descripcion}`;
                                     if (!clipboard.has(key)) {
                                         clipboard.set(key, `${key}: ${importe} €`);
                                         div.classList.add("selected");

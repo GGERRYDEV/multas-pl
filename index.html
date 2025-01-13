@@ -17,19 +17,19 @@
             padding: 20px;
             text-align: center;
             position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .calculadora-container {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             background-color: white;
-            padding: 5px;
+            padding: 10px;
             border-radius: 15px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .calculadora-container img {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
         }
         .search-container {
             display: flex;
@@ -64,10 +64,6 @@
         .result-item button {
             margin-left: 10px;
             padding: 5px 10px;
-        }
-        .result-item label {
-            margin-left: 10px;
-            font-size: 14px;
         }
         .result-item:hover {
             background-color: #f0f0f0;
@@ -486,19 +482,16 @@
                             div.innerHTML = `
                                 ${multa.articulo} - ${multa.descripcion}
                                 <input type="number" placeholder="${min}-${max}" min="${min}" max="${max}" />
-                                <label><input type="checkbox" /> Radar móvil</label>
                                 <button>Agregar</button>
                             `;
                             const input = div.querySelector("input[type='number']");
-                            const radarCheckbox = div.querySelector("input[type='checkbox']");
                             const button = div.querySelector("button");
                             button.addEventListener("click", () => {
                                 const importe = input.value;
-                                const radarMovil = radarCheckbox.checked ? " (con radar móvil)" : "";
                                 const key = `${multa.articulo} - ${multa.descripcion}`;
                                 if (importe >= min && importe <= max) {
                                     if (!clipboard.has(key)) {
-                                        clipboard.set(key, `${key}: ${importe} €${radarMovil}`);
+                                        clipboard.set(key, `${key}: ${importe} €`);
                                         div.classList.add("selected");
                                         actualizarClipboard();
                                     } else {

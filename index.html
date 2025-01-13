@@ -18,10 +18,15 @@
             text-align: center;
         }
         .calculadora-container {
-            position: relative;
+            position: absolute;
+            top: 10px;
+            right: 10px;
             display: flex;
-            justify-content: center;
-            margin: 20px 0;
+            align-items: center;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .calculadora-container img {
             width: 100px;
@@ -483,36 +488,8 @@
                         const div = document.createElement("div");
                         div.className = "result-item";
 
-                        if (multa.multa.includes("-")) {
-                            const [min, max] = multa.multa.replace("€", "").split("-").map(v => parseInt(v.trim(), 10));
-                            div.innerHTML = `
-                                ${multa.articulo} - ${multa.descripcion}: 
-                                <input type="number" placeholder="${min}-${max}" min="${min}" max="${max}" />
-                                <button>Agregar</button>
-                            `;
-                            const input = div.querySelector("input");
-                            const button = div.querySelector("button");
-                            button.addEventListener("click", () => {
-                                const importe = parseInt(input.value, 10);
-                                const key = `${multa.articulo} - ${multa.descripcion}`;
-                                if (importe >= min && importe <= max) {
-                                    if (!clipboard.has(key)) {
-                                        clipboard.set(key, `${key}: ${importe} €`);
-                                        div.classList.add("selected");
-                                        actualizarClipboard();
-                                    } else {
-                                        clipboard.delete(key);
-                                        div.classList.remove("selected");
-                                        actualizarClipboard();
-                                    }
-                                } else {
-                                    alert(`Introduce un valor válido entre ${min} y ${max}.`);
-                                }
-                            });
-                        } else {
-                            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                            div.addEventListener("click", () => toggleClipboard(div, multa));
-                        }
+                        div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                        div.addEventListener("click", () => toggleClipboard(div, multa));
 
                         resultsContainer.appendChild(div);
                     });
@@ -548,6 +525,12 @@
                         deleteButton.addEventListener("click", () => {
                             clipboard.delete(key);
                             actualizarClipboard();
+                            const resultItems = document.querySelectorAll(".result-item");
+                            resultItems.forEach(item => {
+                                if (item.textContent.includes(key.split(":")[0])) {
+                                    item.classList.remove("selected");
+                                }
+                            });
                         });
 
                         div.appendChild(deleteButton);

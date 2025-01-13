@@ -472,10 +472,12 @@
                         const div = document.createElement("div");
                         div.className = "result-item";
 
-                        if (multa.descripcion.includes("-")) {
-                            const [min, max] = multa.descripcion.match(/\d+/g).map(Number);
+                        const { articulo, descripcion, multa: multaTexto } = multa;
+
+                        if (multaTexto.includes("-")) {
+                            const [min, max] = multaTexto.match(/\d+/g).map(Number);
                             div.innerHTML = `
-                                ${multa.articulo} - ${multa.descripcion}
+                                ${articulo} - ${descripcion} (${multaTexto})
                                 <input type="number" placeholder="${min}-${max}" min="${min}" max="${max}" />
                                 <button>Agregar</button>
                             `;
@@ -484,7 +486,7 @@
                             button.addEventListener("click", () => {
                                 const importe = parseFloat(input.value);
                                 if (importe >= min && importe <= max) {
-                                    const key = `${multa.articulo} - ${importe}€`;
+                                    const key = `${articulo} - ${descripcion} - ${importe}€`;
                                     if (!clipboard.has(key)) {
                                         clipboard.set(key, key);
                                         div.classList.add("selected");
@@ -497,7 +499,7 @@
                                 }
                             });
                         } else {
-                            div.textContent = `${multa.articulo} - ${multa.descripcion}`;
+                            div.textContent = `${articulo} - ${descripcion} (${multaTexto})`;
                             div.addEventListener("click", () => toggleClipboard(div, multa));
                         }
 
@@ -507,7 +509,7 @@
             }
 
             function toggleClipboard(element, multa) {
-                const key = `${multa.articulo} - ${multa.descripcion}`;
+                const key = `${multa.articulo} - ${multa.descripcion} (${multa.multa})`;
                 if (clipboard.has(key)) {
                     clipboard.delete(key);
                     element.classList.remove("selected");

@@ -14,26 +14,26 @@
         .header {
             background-color: #0044cc;
             color: white;
-            padding: 20px;
             text-align: center;
             position: relative;
-            height: 150px;
+            height: 180px;
+            padding-top: 20px;
         }
         .calculadora-container {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 20px;
+            right: 20px;
+            width: 140px;
+            height: 140px;
+            background-color: white;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 120px;
-            height: 120px;
-            background-color: white;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .calculadora-container img {
-            width: 100%;
+            width: 80%;
             height: auto;
         }
         .search-container {
@@ -72,10 +72,10 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 3px;
-            transition: background-color 0.3s, border-color 0.3s;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         .result-item input[type="number"] {
             width: 80px;
@@ -491,12 +491,15 @@
             ];
 
             const resultsContainer = document.getElementById("results");
+            const searchInput = document.getElementById("search-input");
             const clipboardContainer = document.getElementById("clipboard-content");
             const copyButton = document.getElementById("copy-button");
+
             let clipboard = new Map();
 
             function mostrarMultas(query = "") {
                 resultsContainer.innerHTML = "";
+
                 const filteredMultas = multas.filter(multa =>
                     multa.articulo.toLowerCase().includes(query) ||
                     multa.descripcion.toLowerCase().includes(query)
@@ -509,34 +512,15 @@
                         const div = document.createElement("div");
                         div.className = "result-item";
 
-                        if (multa.multa.includes("-")) {
-                            const [min, max] = multa.multa.replace("€", "").split("-").map(v => parseInt(v.trim(), 10));
-                            div.innerHTML = `
-                                ${multa.articulo} - ${multa.descripcion}: 
-                                <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
-                                <button>Agregar</button>
-                            `;
-                            const input = div.querySelector("input");
-                            const button = div.querySelector("button");
-                            button.addEventListener("click", () => {
-                                const importe = input.value;
-                                const key = `${multa.articulo} - ${multa.descripcion}`;
-                                if (importe >= min && importe <= max) {
-                                    if (!clipboard.has(key)) {
-                                        clipboard.set(key, `${key}: ${importe} €`);
-                                        div.classList.add("selected");
-                                        actualizarClipboard();
-                                    } else {
-                                        alert("Esta multa ya está en el portapapeles.");
-                                    }
-                                } else {
-                                    alert(`Introduce un valor válido entre ${min} y ${max}.`);
-                                }
-                            });
-                        } else {
-                            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                            div.addEventListener("click", () => toggleClipboard(div, multa));
-                        }
+                        div.innerHTML = `
+                            ${multa.articulo} - ${multa.descripcion}: ${multa.multa}
+                            <button>Agregar</button>
+                        `;
+
+                        const button = div.querySelector("button");
+                        button.addEventListener("click", () => {
+                            toggleClipboard(div, multa);
+                        });
 
                         resultsContainer.appendChild(div);
                     });
@@ -561,48 +545,43 @@
                 if (clipboard.size === 0) {
                     clipboardContainer.textContent = "No hay multas seleccionadas.";
                 } else {
-                    clipboard.forEach((item, key) => {
+                    clipboard.forEach(item => {
                         const div = document.createElement("div");
                         div.className = "clipboard-item";
-                        div.textContent = item;
-
-                        const deleteButton = document.createElement("button");
-                        deleteButton.className = "delete-button";
-                        deleteButton.textContent = "Eliminar";
+                        div.innerHTML = `
+                            ${item}
+                            <button class="delete-button">Eliminar</button>
+                        `;
+                        const deleteButton = div.querySelector(".delete-button");
                         deleteButton.addEventListener("click", () => {
-                            clipboard.delete(key);
+                            clipboard.delete(item);
                             actualizarClipboard();
-                            const resultItems = document.querySelectorAll(".result-item");
-                            resultItems.forEach(item => {
-                                if (item.textContent.includes(key.split(":")[0])) {
-                                    item.classList.remove("selected");
+                            const elements = document.querySelectorAll(".result-item");
+                            elements.forEach(el => {
+                                if (el.textContent.includes(item)) {
+                                    el.classList.remove("selected");
                                 }
                             });
                         });
-
-                        div.appendChild(deleteButton);
                         clipboardContainer.appendChild(div);
                     });
                 }
             }
 
-            function copiarAlPortapapeles() {
+            copyButton.addEventListener("click", () => {
                 const texto = Array.from(clipboard.values()).join("\n");
                 if (texto) {
                     navigator.clipboard.writeText(texto).then(() => {
                         alert("Contenido copiado al portapapeles.");
-                    }).catch(err => {
-                        console.error("Error al copiar al portapapeles:", err);
                     });
                 } else {
                     alert("No hay contenido para copiar.");
                 }
-            }
+            });
 
-            copyButton.addEventListener("click", copiarAlPortapapeles);
-
-            document.getElementById("search-input").addEventListener("input", e => {
-                mostrarMultas(e.target.value.toLowerCase());
+            searchInput.addEventListener("input", () => {
+                const query = searchInput.value.toLowerCase();
+                mostrarMultas(query);
             });
 
             mostrarMultas();

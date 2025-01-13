@@ -38,20 +38,105 @@
             font-weight: bold;
             color: #0044cc;
         }
-        /* Otros estilos ya existentes */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+        .search-container input {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .goto-clipboard {
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .goto-clipboard:hover {
+            background-color: #0033aa;
+        }
+        .results {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .result-item {
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .result-item input {
+            margin-left: 10px;
+            width: 100px;
+        }
+        .result-item button {
+            margin-left: 10px;
+        }
+        .result-item:hover {
+            background-color: #f0f0f0;
+        }
+        .result-item.selected {
+            background-color: #d1e7dd;
+            border-color: #b5d5c9;
+        }
+        .clipboard {
+            margin: 20px;
+            padding: 20px;
+            background: #e9ffe9;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .clipboard h2 {
+            margin-top: 0;
+        }
+        .clipboard-item {
+            margin-bottom: 10px;
+        }
+        .copy-button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+        }
+        .copy-button:hover {
+            background-color: #0033aa;
+        }
     </style>
+</head>
 <body>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
     </div>
     <div class="calculadora-container">
-        <img src="data:image/jpeg;base64,/9j/4AAQSkZ..." alt="Icono" />
+        <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Icono" />
         <span>Calculadora de Multas Policía Local</span>
     </div>
     <div class="search-container">
         <input id="search-input" type="text" placeholder="Buscar multas..." />
     </div>
-    <!-- Más contenido -->
+    <div id="results" class="results"></div>
+    <div id="clipboard" class="clipboard">
+        <h2>Portapapeles</h2>
+        <div id="clipboard-content"></div>
+        <button id="copy-button" class="copy-button">Copiar al portapapeles</button>
+    </div>
 </body>
 </html>
 

@@ -34,12 +34,24 @@
             justify-content: center;
             align-items: center;
             margin: 20px;
+            gap: 10px;
         }
         .search-container input {
             width: 300px;
             padding: 10px;
             font-size: 16px;
-            margin-right: 10px;
+        }
+        .goto-clipboard {
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .goto-clipboard:hover {
+            background-color: #0033aa;
         }
         .results {
             margin: 20px;
@@ -115,6 +127,25 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>Calculadora de Multas de la Policía Local</h1>
+        <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
+    </div>
+    <div class="search-container">
+        <input id="search-input" type="text" placeholder="Buscar multas..." />
+        <button class="goto-clipboard" onclick="document.getElementById('clipboard').scrollIntoView()">Ir al portapapeles</button>
+    </div>
+    <div id="results" class="results"></div>
+    <div id="clipboard" class="clipboard">
+        <h2>Portapapeles</h2>
+        <div id="clipboard-content"></div>
+        <button id="copy-button" class="copy-button">Copiar al portapapeles</button>
+    </div>
+
+    <script>
+        // Aquí sigue el código JavaScript exactamente como estaba antes.
+    </script>
+</body>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
         <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">

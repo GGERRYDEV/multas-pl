@@ -5,7 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
-        /* Mismo estilo anterior */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #0044cc;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+        .goto-clipboard {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background-color: white;
+            color: #0044cc;
+            border: 1px solid #0044cc;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .goto-clipboard:hover {
+            background-color: #f0f0f0;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .search-container input {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .results {
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .result-item {
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .result-item:hover {
+            background-color: #f0f0f0;
+        }
+        .result-item.selected {
+            background-color: #d1e7dd;
+            border-color: #b5d5c9;
+        }
+        .clipboard {
+            margin: 20px;
+            padding: 20px;
+            background: #e9ffe9;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .clipboard h2 {
+            margin-top: 0;
+        }
+        .clipboard-item {
+            margin-bottom: 10px;
+        }
         .copy-button {
             display: block;
             margin: 10px auto;
@@ -24,6 +95,7 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Array de multas: puedes agregar más artículos aquí
             const multas = [
   { articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
   { articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },
@@ -226,7 +298,7 @@
 { articulo: "Art. 4.31", descripcion: "Venta de estupefacientes a menores", multa: "1075 €" },
 { articulo: "Art. 4.32", descripcion: "Tráfico de drogas", multa: "7500 € X Kg" },
 { articulo: "Art. 4.33", descripcion: "Ir bajo los efectos de estupefacientes en vía pública", multa: "1000 €" },
-{ articulo: "Art. 4.34", descripcion: "Portar una caja de munición", multa: "720 € + Retirada de la caja" }
+{ articulo: "Art. 4.34", descripcion: "Portar una caja de munición", multa: "720 € + Retirada de la caja" },
 { articulo: "Art. 5.1", descripcion: "Intento de homicidio sin armas a un civil", multa: "1100 €" },
 { articulo: "Art. 5.2", descripcion: "Intento de homicidio con arma blanca a un civil", multa: "1500 €" },
 { articulo: "Art. 5.3", descripcion: "Intento de homicidio con arma corta a un civil", multa: "1850 €" },
@@ -376,29 +448,13 @@
             }
 
             function toggleClipboard(multa) {
-                const isVariable = multa.multa.includes("-");
-                if (isVariable) {
-                    solicitarCantidad(multa);
+                const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                if (clipboard.has(key)) {
+                    clipboard.delete(key);
                 } else {
-                    const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                    if (clipboard.has(key)) {
-                        clipboard.delete(key);
-                    } else {
-                        clipboard.add(key);
-                    }
-                    actualizarClipboard();
-                }
-            }
-
-            function solicitarCantidad(multa) {
-                const cantidad = prompt(`Ingrese la cantidad para la multa (${multa.descripcion}):`);
-                if (cantidad && !isNaN(cantidad)) {
-                    const key = `${multa.articulo} - ${multa.descripcion}: ${cantidad} €`;
                     clipboard.add(key);
-                    actualizarClipboard();
-                } else if (cantidad) {
-                    alert("Por favor, introduzca un número válido.");
                 }
+                actualizarClipboard();
             }
 
             function actualizarClipboard() {

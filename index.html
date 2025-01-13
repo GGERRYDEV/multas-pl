@@ -59,6 +59,10 @@
         .result-item:hover {
             background-color: #f0f0f0;
         }
+        .result-item.selected {
+            background-color: #d1e7dd;
+            border-color: #b5d5c9;
+        }
         .clipboard {
             margin: 20px;
             padding: 20px;
@@ -75,52 +79,31 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const multas = [
-{ articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
-{ articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },
-{ articulo: "Art. 1.3", descripcion: "Cambio de carril en línea continua", multa: "275 €" },
-{ articulo: "Art. 1.4", descripcion: "Circular en sentido contrario", multa: "400 € + Retirada de la licencia." },
-{ articulo: "Art. 1.5", descripcion: "Estacionar de manera incorrecta", multa: "150 €" },
-{ articulo: "Art. 1.6", descripcion: "Obstruir la circulación", multa: "300 €" },
-{ articulo: "Art. 1.7", descripcion: "Saltarse un STOP", multa: "225 €" },
-{ articulo: "Art. 1.8", descripcion: "Saltarse un semáforo", multa: "300 €" },
-{ articulo: "Art. 1.9", descripcion: "No ceder el paso a vehículos de emergencia", multa: "1250 € + Retirada de la licencia." },
-{ articulo: "Art. 1.10", descripcion: "Realizar un adelantamiento indebido", multa: "325 €" },
-{ articulo: "Art. 1.11", descripcion: "Circular marcha atrás", multa: "350 € + Retirada de la licencia." },
-{ articulo: "Art. 1.12", descripcion: "Ignorar las indicaciones de un policía", multa: "375 €" },
-{ articulo: "Art. 1.13", descripcion: "Evadir un control policial", multa: "450 €" },
-{ articulo: "Art. 1.14", descripcion: "Darse a la fuga de un control policial", multa: "1150 € + Retirada de la licencia." },
-{ articulo: "Art. 1.15", descripcion: "Exceso de velocidad en vías interurbanas", multa: "350 €" },
-{ articulo: "Art. 1.17", descripcion: "Conducir con el vehículo en malas condiciones", multa: "275 € + vehículo incautado." },
-{ articulo: "Art. 1.18", descripcion: "Conducir por la noche sin las luces", multa: "300 €" },
-{ articulo: "Art. 1.19", descripcion: "Conducir por el día con las luces", multa: "100 €" },
-{ articulo: "Art. 1.20", descripcion: "Conducir en un túnel o lugares oscuros sin luces", multa: "325 €" },
-{ articulo: "Art. 1.21", descripcion: "Circular por zonas no autorizadas", multa: "350 €" },
-{ articulo: "Art. 1.22", descripcion: "Estacionar en zonas no autorizadas", multa: "450 €" },
-{ articulo: "Art. 1.23", descripcion: "Conducir bajo las influencias del alcohol", multa: "4500 € + Retirada de la licencia." },
-{ articulo: "Art.1.24", descripcion: "Conducir bajo la influencia de estupefacientes", multa: "5500  € + Retirada de la licencia." },
-{ articulo: "Art. 1.25", descripcion: "Circular sin permiso de conducir", multa: "750 € + Vehículo Incautado." },
-            ];
+            const multas = Array.from({ length: 1000 }, (_, i) => ({
+                articulo: `Art. ${i + 1}`,
+                descripcion: `Descripción de la infracción ${i + 1}`,
+                multa: `${Math.floor(Math.random() * 1000) + 50} €`,
+            }));
+
+            const PAGE_SIZE = 50;
 
             let portapapeles = [];
+            let currentPage = 0;
+            let currentQuery = "";
 
             const searchInput = document.getElementById("search-input");
             const resultsContainer = document.getElementById("results");
             const clipboardContainer = document.getElementById("clipboard");
 
-            function mostrarTodasLasMultas() {
-                resultsContainer.innerHTML = "";
-                multas.forEach(multa => {
-                    const div = document.createElement("div");
-                    div.className = "result-item";
-                    div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                    div.onclick = () => toggleMultaEnPortapapeles(multa);
-                    resultsContainer.appendChild(div);
-                });
+            function debounce(func, delay) {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func(...args), delay);
+                };
             }
 
-            function buscarMultas() {
-                const query = searchInput.value.toLowerCase();
+            function mostrarMultas(pagina = 0, query = "") {
                 resultsContainer.innerHTML = "";
 
                 const filteredMultas = multas.filter(multa =>
@@ -128,27 +111,46 @@
                     multa.descripcion.toLowerCase().includes(query)
                 );
 
-                if (filteredMultas.length > 0) {
-                    filteredMultas.forEach(multa => {
+                const start = pagina * PAGE_SIZE;
+                const end = start + PAGE_SIZE;
+                const multasParaMostrar = filteredMultas.slice(start, end);
+
+                if (multasParaMostrar.length === 0) {
+                    resultsContainer.textContent = "No se encontraron resultados.";
+                } else {
+                    multasParaMostrar.forEach(multa => {
                         const div = document.createElement("div");
                         div.className = "result-item";
                         div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                        div.onclick = () => toggleMultaEnPortapapeles(multa);
+                        if (portapapeles.find(item => item.articulo === multa.articulo)) {
+                            div.classList.add("selected");
+                        }
+                        div.onclick = () => toggleMultaEnPortapapeles(multa, div);
                         resultsContainer.appendChild(div);
                     });
-                } else {
-                    resultsContainer.textContent = "No se encontraron resultados.";
+
+                    if (end < filteredMultas.length) {
+                        const loadMore = document.createElement("button");
+                        loadMore.textContent = "Cargar más";
+                        loadMore.style.display = "block";
+                        loadMore.style.margin = "20px auto";
+                        loadMore.style.padding = "10px";
+                        loadMore.onclick = () => {
+                            mostrarMultas(pagina + 1, query);
+                        };
+                        resultsContainer.appendChild(loadMore);
+                    }
                 }
             }
 
-            function toggleMultaEnPortapapeles(multa) {
+            function toggleMultaEnPortapapeles(multa, element) {
                 const index = portapapeles.findIndex(item => item.articulo === multa.articulo);
                 if (index !== -1) {
-                    // Si ya está en el portapapeles, elimínala
                     portapapeles.splice(index, 1);
+                    element.classList.remove("selected");
                 } else {
-                    // Si no está, agrégala
                     portapapeles.push(multa);
+                    element.classList.add("selected");
                 }
                 actualizarPortapapeles();
             }
@@ -173,9 +175,13 @@
                 document.getElementById("clipboard").scrollIntoView({ behavior: "smooth" });
             });
 
-            searchInput.addEventListener("input", buscarMultas);
+            searchInput.addEventListener("input", debounce(() => {
+                currentQuery = searchInput.value.toLowerCase();
+                currentPage = 0;
+                mostrarMultas(currentPage, currentQuery);
+            }, 300));
 
-            mostrarTodasLasMultas();
+            mostrarMultas();
         });
     </script>
 </head>

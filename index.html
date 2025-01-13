@@ -6,26 +6,26 @@
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
         :root {
-            --bg-color: #f4f4f4;
-            --text-color: #000;
-            --card-bg: #fff;
+            --bg-color: #e0e0e0;
+            --text-color: #222;
+            --card-bg: #f5f5f5;
             --card-shadow: rgba(0, 0, 0, 0.1);
-            --header-bg: #0044cc;
+            --header-bg: #3a7bd5;
             --header-text: #fff;
-            --button-bg: #0044cc;
+            --button-bg: #3a7bd5;
             --button-text: #fff;
-            --button-hover: #0033aa;
+            --button-hover: #2b5ca8;
         }
         [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #e0e0e0;
-            --card-bg: #1e1e1e;
+            --bg-color: #2e2e2e;
+            --text-color: #dcdcdc;
+            --card-bg: #424242;
             --card-shadow: rgba(255, 255, 255, 0.1);
-            --header-bg: #1a73e8;
+            --header-bg: #5a95e8;
             --header-text: #fff;
-            --button-bg: #1a73e8;
+            --button-bg: #5a95e8;
             --button-text: #fff;
-            --button-hover: #155cb0;
+            --button-hover: #4677c4;
         }
         body {
             font-family: Arial, sans-serif;
@@ -109,15 +109,33 @@
         .clipboard {
             margin: 20px;
             padding: 20px;
-            background: #e9ffe9;
+            background: var(--card-bg);
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 5px var(--card-shadow);
         }
         .clipboard h2 {
             margin-top: 0;
         }
         .clipboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 10px;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+        .clipboard-item button {
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .clipboard-item button:hover {
+            background-color: var(--button-hover);
         }
         .copy-button {
             display: block;
@@ -495,13 +513,9 @@
                                 const importe = input.value;
                                 const key = `${multa.articulo} - ${multa.descripcion}`;
                                 if (importe >= min && importe <= max) {
-                                    if (!clipboard.has(key)) {
-                                        clipboard.set(key, `${key}: ${importe} €`);
-                                        actualizarClipboard();
-                                    } else {
-                                        clipboard.delete(key);
-                                        actualizarClipboard();
-                                    }
+                                    clipboard.set(key, `${key}: ${importe} €`);
+                                    actualizarClipboard();
+                                    div.classList.add("selected");
                                 } else {
                                     alert(`Introduce un valor válido entre ${min} y ${max}.`);
                                 }
@@ -520,8 +534,10 @@
                 const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
                 if (clipboard.has(key)) {
                     clipboard.delete(key);
+                    element.classList.remove("selected");
                 } else {
                     clipboard.set(key, key);
+                    element.classList.add("selected");
                 }
                 actualizarClipboard();
             }
@@ -532,13 +548,26 @@
                 if (clipboard.size === 0) {
                     clipboardContainer.textContent = "No hay multas seleccionadas.";
                 } else {
-                    clipboard.forEach(item => {
+                    clipboard.forEach((item, key) => {
                         const div = document.createElement("div");
                         div.className = "clipboard-item";
-                        div.textContent = item;
+                        div.innerHTML = `
+                            <span>${item}</span>
+                            <button onclick="eliminarMulta('${key}')">Eliminar</button>
+                        `;
                         clipboardContainer.appendChild(div);
                     });
                 }
+            }
+
+            function eliminarMulta(key) {
+                clipboard.delete(key);
+                actualizarClipboard();
+                document.querySelectorAll(".result-item").forEach(item => {
+                    if (item.textContent.includes(key)) {
+                        item.classList.remove("selected");
+                    }
+                });
             }
 
             function copiarAlPortapapeles() {
@@ -561,10 +590,7 @@
             }
 
             copyButton.addEventListener("click", copiarAlPortapapeles);
-            searchInput.addEventListener("input", () => {
-                const query = searchInput.value.toLowerCase();
-                mostrarMultas(query);
-            });
+            searchInput.addEventListener("input", e => mostrarMultas(e.target.value.toLowerCase()));
             themeToggle.addEventListener("click", toggleTheme);
 
             mostrarMultas();
@@ -574,24 +600,16 @@
 <body>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
-        <button id="theme-toggle" class="theme-toggle">Modo Claro/Oscuro</button>
     </div>
-
+    <button id="theme-toggle" class="theme-toggle">Cambiar tema</button>
     <div class="search-container">
-        <input type="text" id="search-input" placeholder="Buscar...">
-        <button class="goto-clipboard" onclick="document.getElementById('clipboard').scrollIntoView()">Ir al portapapeles</button>
+        <input id="search-input" type="text" placeholder="Buscar multas..." />
     </div>
-
-    <div id="results" class="results">
-        <!-- Resultados aparecerán aquí -->
-    </div>
-
+    <div id="results" class="results"></div>
     <div id="clipboard" class="clipboard">
         <h2>Portapapeles</h2>
-        <div id="clipboard-content">
-            No hay multas seleccionadas.
-        </div>
-        <button id="copy-button" class="copy-button">Copiar Portapapeles</button>
+        <div id="clipboard-content"></div>
+        <button id="copy-button" class="copy-button">Copiar al portapapeles</button>
     </div>
 </body>
 </html>

@@ -24,17 +24,14 @@
             display: flex;
             align-items: center;
             padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .calculadora-container img {
             width: 60px;
             height: 60px;
             margin-right: 10px;
-            background-color: transparent;
-        }
-        .calculadora-container span {
-            font-size: 18px;
-            font-weight: bold;
-            color: #0044cc;
         }
         .search-container {
             display: flex;
@@ -117,7 +114,6 @@
     </div>
     <div class="calculadora-container">
         <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Icono" />
-        <span>Calculadora de Multas Policía Local</span>
     </div>
     <div class="search-container">
         <input id="search-input" type="text" placeholder="Buscar multas..." />
@@ -475,8 +471,36 @@
                     filteredMultas.forEach(multa => {
                         const div = document.createElement("div");
                         div.className = "result-item";
-                        div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                        div.addEventListener("click", () => toggleClipboard(div, multa));
+
+                        if (multa.multa.includes("-")) {
+                            const [min, max] = multa.multa.replace("€", "").split("-").map(v => parseInt(v.trim(), 10));
+                            div.innerHTML = `
+                                ${multa.articulo} - ${multa.descripcion}: 
+                                <input type="number" placeholder="${min}-${max}" min="${min}" max="${max}" />
+                                <button>Agregar</button>
+                            `;
+                            const input = div.querySelector("input");
+                            const button = div.querySelector("button");
+                            button.addEventListener("click", () => {
+                                const importe = parseInt(input.value, 10);
+                                const key = `${multa.articulo} - ${multa.descripcion}`;
+                                if (importe >= min && importe <= max) {
+                                    if (!clipboard.has(key)) {
+                                        clipboard.set(key, `${key}: ${importe} €`);
+                                        div.classList.add("selected");
+                                        actualizarClipboard();
+                                    } else {
+                                        alert("Esta multa ya está en el portapapeles.");
+                                    }
+                                } else {
+                                    alert(`Introduce un valor válido entre ${min} y ${max}.`);
+                                }
+                            });
+                        } else {
+                            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                            div.addEventListener("click", () => toggleClipboard(div, multa));
+                        }
+
                         resultsContainer.appendChild(div);
                     });
                 }

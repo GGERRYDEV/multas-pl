@@ -80,7 +80,7 @@
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Array de multas
+            // Array de multas: puedes agregar más artículos aquí
             const multas = [
 { articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
 { articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },
@@ -180,14 +180,13 @@
 { articulo: "Art. 2.42", descripcion: "Robo de evidencias", multa: "5000 €" },
 { articulo: "Art. 2.43", descripcion: "Robo de utensilios policiales", multa: "1150 €" },
 { articulo: "Art. 2.44", descripcion: "Robo de material médico", multa: "750 €" }
-                // Agrega más artículos aquí
+                // Agrega más artículos según sea necesario
             ];
 
             const resultsContainer = document.getElementById("results");
             const searchInput = document.getElementById("search-input");
             const clipboardContainer = document.getElementById("clipboard-content");
 
-            // Lista de artículos seleccionados
             let clipboard = new Set();
 
             function mostrarMultas(query = "") {
@@ -235,7 +234,6 @@
                     });
                 }
 
-                // Actualizar estilos de artículos seleccionados
                 document.querySelectorAll(".result-item").forEach(item => {
                     const isSelected = clipboard.has(item.textContent);
                     item.classList.toggle("selected", isSelected);
@@ -247,7 +245,6 @@
                 mostrarMultas(query);
             });
 
-            // Mostrar todas las multas al cargar
             mostrarMultas();
         });
     </script>

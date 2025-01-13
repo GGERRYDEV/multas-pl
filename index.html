@@ -55,6 +55,7 @@
             padding: 5px;
             border: 1px solid #ddd;
             border-radius: 3px;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         .result-item:hover {
             background-color: #f0f0f0;
@@ -76,28 +77,10 @@
         .clipboard-item {
             margin-bottom: 10px;
         }
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin: 20px;
-        }
-        .pagination button {
-            margin: 0 5px;
-            padding: 10px 20px;
-            background-color: #0044cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .pagination button:disabled {
-            background-color: #ddd;
-            cursor: not-allowed;
-        }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Aquí defines tus propios artículos
+            // Array de multas
             const multas = [
 { articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
 { articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },
@@ -200,18 +183,14 @@
                 // Agrega más artículos aquí
             ];
 
-            const PAGE_SIZE = 50;
-
-            let portapapeles = [];
-            let currentPage = 0;
-            let currentQuery = "";
-
-            const searchInput = document.getElementById("search-input");
             const resultsContainer = document.getElementById("results");
-            const clipboardContainer = document.getElementById("clipboard");
-            const paginationContainer = document.getElementById("pagination");
+            const searchInput = document.getElementById("search-input");
+            const clipboardContainer = document.getElementById("clipboard-content");
 
-            function mostrarMultas(pagina = 0, query = "") {
+            // Lista de artículos seleccionados
+            let clipboard = new Set();
+
+            function mostrarMultas(query = "") {
                 resultsContainer.innerHTML = "";
 
                 const filteredMultas = multas.filter(multa =>
@@ -219,90 +198,56 @@
                     multa.descripcion.toLowerCase().includes(query)
                 );
 
-                const start = pagina * PAGE_SIZE;
-                const end = start + PAGE_SIZE;
-                const multasParaMostrar = filteredMultas.slice(start, end);
-
-                if (multasParaMostrar.length === 0) {
+                if (filteredMultas.length === 0) {
                     resultsContainer.textContent = "No se encontraron resultados.";
                 } else {
-                    multasParaMostrar.forEach(multa => {
+                    filteredMultas.forEach(multa => {
                         const div = document.createElement("div");
                         div.className = "result-item";
                         div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                        if (portapapeles.find(item => item.articulo === multa.articulo)) {
-                            div.classList.add("selected");
-                        }
-                        div.onclick = () => toggleMultaEnPortapapeles(multa, div);
+                        div.addEventListener("click", () => toggleClipboard(multa));
                         resultsContainer.appendChild(div);
                     });
                 }
-
-                mostrarPaginacion(filteredMultas.length, pagina);
             }
 
-            function toggleMultaEnPortapapeles(multa, element) {
-                const index = portapapeles.findIndex(item => item.articulo === multa.articulo);
-                if (index !== -1) {
-                    portapapeles.splice(index, 1);
-                    element.classList.remove("selected");
+            function toggleClipboard(multa) {
+                const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                if (clipboard.has(key)) {
+                    clipboard.delete(key);
                 } else {
-                    portapapeles.push(multa);
-                    element.classList.add("selected");
+                    clipboard.add(key);
                 }
-                actualizarPortapapeles();
+                actualizarClipboard();
             }
 
-            function actualizarPortapapeles() {
-                clipboardContainer.innerHTML = "<h2>Portapapeles</h2>";
+            function actualizarClipboard() {
+                clipboardContainer.innerHTML = "";
 
-                if (portapapeles.length === 0) {
-                    clipboardContainer.innerHTML += "<p>No hay multas en el portapapeles.</p>";
+                if (clipboard.size === 0) {
+                    clipboardContainer.textContent = "No hay multas seleccionadas.";
                 } else {
-                    portapapeles.forEach(multa => {
+                    clipboard.forEach(item => {
                         const div = document.createElement("div");
                         div.className = "clipboard-item";
-                        div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                        div.textContent = item;
                         clipboardContainer.appendChild(div);
                     });
                 }
+
+                // Actualizar estilos de artículos seleccionados
+                document.querySelectorAll(".result-item").forEach(item => {
+                    const isSelected = clipboard.has(item.textContent);
+                    item.classList.toggle("selected", isSelected);
+                });
             }
-
-            function mostrarPaginacion(totalMultas, paginaActual) {
-                paginationContainer.innerHTML = "";
-
-                const totalPaginas = Math.ceil(totalMultas / PAGE_SIZE);
-
-                const prevButton = document.createElement("button");
-                prevButton.textContent = "Anterior";
-                prevButton.disabled = paginaActual === 0;
-                prevButton.onclick = () => {
-                    currentPage -= 1;
-                    mostrarMultas(currentPage, currentQuery);
-                };
-                paginationContainer.appendChild(prevButton);
-
-                const nextButton = document.createElement("button");
-                nextButton.textContent = "Siguiente";
-                nextButton.disabled = paginaActual === totalPaginas - 1;
-                nextButton.onclick = () => {
-                    currentPage += 1;
-                    mostrarMultas(currentPage, currentQuery);
-                };
-                paginationContainer.appendChild(nextButton);
-            }
-
-            const gotoClipboardButton = document.getElementById("goto-clipboard");
-            gotoClipboardButton.addEventListener("click", () => {
-                document.getElementById("clipboard").scrollIntoView({ behavior: "smooth" });
-            });
 
             searchInput.addEventListener("input", () => {
-                currentQuery = searchInput.value.toLowerCase();
-                currentPage = 0;
-                mostrarMultas(currentPage, currentQuery);
+                const query = searchInput.value.toLowerCase();
+                mostrarMultas(query);
             });
 
+            // Mostrar todas las multas al cargar
             mostrarMultas();
         });
     </script>
@@ -310,7 +255,7 @@
 <body>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
-        <button id="goto-clipboard" class="goto-clipboard">Ir al Portapapeles</button>
+        <button class="goto-clipboard" onclick="document.getElementById('clipboard').scrollIntoView()">Ir al portapapeles</button>
     </div>
 
     <div class="search-container">
@@ -321,13 +266,11 @@
         <!-- Resultados aparecerán aquí -->
     </div>
 
-    <div id="pagination" class="pagination">
-        <!-- Controles de paginación aparecerán aquí -->
-    </div>
-
     <div id="clipboard" class="clipboard">
         <h2>Portapapeles</h2>
-        <p>No hay multas en el portapapeles.</p>
+        <div id="clipboard-content">
+            No hay multas seleccionadas.
+        </div>
     </div>
 </body>
 </html>

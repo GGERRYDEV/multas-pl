@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Multas</title>
+    <title>Calculadora de Multas de la Policía Local</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -76,11 +76,6 @@
         .clipboard-item {
             margin-bottom: 10px;
         }
-        .total {
-            font-weight: bold;
-            margin-top: 20px;
-            font-size: 1.2em;
-        }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -107,15 +102,6 @@
             const searchInput = document.getElementById("search-input");
             const resultsContainer = document.getElementById("results");
             const clipboardContainer = document.getElementById("clipboard");
-            const totalContainer = document.getElementById("total");
-
-            function debounce(func, delay) {
-                let timeout;
-                return (...args) => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func(...args), delay);
-                };
-            }
 
             function mostrarMultas(pagina = 0, query = "") {
                 resultsContainer.innerHTML = "";
@@ -182,9 +168,6 @@
                         clipboardContainer.appendChild(div);
                     });
                 }
-
-                const total = portapapeles.reduce((acc, multa) => acc + multa.multa, 0);
-                totalContainer.textContent = `Total: ${total} €`;
             }
 
             const gotoClipboardButton = document.getElementById("goto-clipboard");
@@ -192,11 +175,11 @@
                 document.getElementById("clipboard").scrollIntoView({ behavior: "smooth" });
             });
 
-            searchInput.addEventListener("input", debounce(() => {
+            searchInput.addEventListener("input", () => {
                 currentQuery = searchInput.value.toLowerCase();
                 currentPage = 0;
                 mostrarMultas(currentPage, currentQuery);
-            }, 300));
+            });
 
             mostrarMultas();
         });
@@ -204,7 +187,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Calculadora de Multas</h1>
+        <h1>Calculadora de Multas de la Policía Local</h1>
         <button id="goto-clipboard" class="goto-clipboard">Ir al Portapapeles</button>
     </div>
 
@@ -219,7 +202,6 @@
     <div id="clipboard" class="clipboard">
         <h2>Portapapeles</h2>
         <p>No hay multas en el portapapeles.</p>
-        <div id="total" class="total">Total: 0 €</div>
     </div>
 </body>
 </html>

@@ -14,8 +14,10 @@
         .header {
             background-color: #0044cc;
             color: white;
-            padding: 10px;
+            padding: 20px;
             text-align: center;
+            position: relative;
+            height: 150px;
         }
         .calculadora-container {
             position: absolute;
@@ -23,14 +25,16 @@
             right: 10px;
             display: flex;
             align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
             background-color: white;
-            padding: 10px;
-            border-radius: 5px;
+            border-radius: 50%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .calculadora-container img {
-            width: 100px;
-            height: 100px;
+            width: 100%;
+            height: auto;
         }
         .search-container {
             display: flex;
@@ -65,10 +69,30 @@
         }
         .result-item {
             margin-bottom: 10px;
-            padding: 5px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 3px;
             transition: background-color 0.3s, border-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .result-item input[type="number"] {
+            width: 80px;
+            padding: 5px;
+            margin-left: 10px;
+        }
+        .result-item button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            border: none;
+            background-color: #0044cc;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .result-item button:hover {
+            background-color: #0033aa;
         }
         .result-item:hover {
             background-color: #f0f0f0;
@@ -127,9 +151,9 @@
 <body>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
-    </div>
-    <div class="calculadora-container">
-        <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Icono" />
+        <div class="calculadora-container">
+            <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Icono" />
+        </div>
     </div>
     <div class="search-container">
         <input id="search-input" type="text" placeholder="Buscar multas..." />
@@ -467,15 +491,12 @@
             ];
 
             const resultsContainer = document.getElementById("results");
-            const searchInput = document.getElementById("search-input");
             const clipboardContainer = document.getElementById("clipboard-content");
             const copyButton = document.getElementById("copy-button");
-
             let clipboard = new Map();
 
             function mostrarMultas(query = "") {
                 resultsContainer.innerHTML = "";
-
                 const filteredMultas = multas.filter(multa =>
                     multa.articulo.toLowerCase().includes(query) ||
                     multa.descripcion.toLowerCase().includes(query)
@@ -488,8 +509,34 @@
                         const div = document.createElement("div");
                         div.className = "result-item";
 
-                        div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                        div.addEventListener("click", () => toggleClipboard(div, multa));
+                        if (multa.multa.includes("-")) {
+                            const [min, max] = multa.multa.replace("€", "").split("-").map(v => parseInt(v.trim(), 10));
+                            div.innerHTML = `
+                                ${multa.articulo} - ${multa.descripcion}: 
+                                <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
+                                <button>Agregar</button>
+                            `;
+                            const input = div.querySelector("input");
+                            const button = div.querySelector("button");
+                            button.addEventListener("click", () => {
+                                const importe = input.value;
+                                const key = `${multa.articulo} - ${multa.descripcion}`;
+                                if (importe >= min && importe <= max) {
+                                    if (!clipboard.has(key)) {
+                                        clipboard.set(key, `${key}: ${importe} €`);
+                                        div.classList.add("selected");
+                                        actualizarClipboard();
+                                    } else {
+                                        alert("Esta multa ya está en el portapapeles.");
+                                    }
+                                } else {
+                                    alert(`Introduce un valor válido entre ${min} y ${max}.`);
+                                }
+                            });
+                        } else {
+                            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                            div.addEventListener("click", () => toggleClipboard(div, multa));
+                        }
 
                         resultsContainer.appendChild(div);
                     });
@@ -554,9 +601,8 @@
 
             copyButton.addEventListener("click", copiarAlPortapapeles);
 
-            searchInput.addEventListener("input", () => {
-                const query = searchInput.value.toLowerCase();
-                mostrarMultas(query);
+            document.getElementById("search-input").addEventListener("input", e => {
+                mostrarMultas(e.target.value.toLowerCase());
             });
 
             mostrarMultas();

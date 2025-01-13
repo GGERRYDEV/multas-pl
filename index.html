@@ -16,6 +16,21 @@
             color: white;
             padding: 10px;
             text-align: center;
+            position: relative;
+        }
+        .goto-clipboard {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            background-color: white;
+            color: #0044cc;
+            border: 1px solid #0044cc;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .goto-clipboard:hover {
+            background-color: #f0f0f0;
         }
         .search-container {
             display: flex;
@@ -79,6 +94,17 @@
             const resultsContainer = document.getElementById("results");
             const clipboardContainer = document.getElementById("clipboard");
 
+            function mostrarTodasLasMultas() {
+                resultsContainer.innerHTML = "";
+                multas.forEach(multa => {
+                    const div = document.createElement("div");
+                    div.className = "result-item";
+                    div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                    div.onclick = () => agregarAlPortapapeles(multa);
+                    resultsContainer.appendChild(div);
+                });
+            }
+
             function buscarMultas() {
                 const query = searchInput.value.toLowerCase();
                 resultsContainer.innerHTML = "";
@@ -117,13 +143,23 @@
                 });
             }
 
+            // Botón para desplazarse al portapapeles
+            const gotoClipboardButton = document.getElementById("goto-clipboard");
+            gotoClipboardButton.addEventListener("click", () => {
+                document.getElementById("clipboard").scrollIntoView({ behavior: "smooth" });
+            });
+
             searchInput.addEventListener("input", buscarMultas);
+
+            // Mostrar todas las multas al cargar la página
+            mostrarTodasLasMultas();
         });
     </script>
 </head>
 <body>
     <div class="header">
         <h1>Calculadora de Multas</h1>
+        <button id="goto-clipboard" class="goto-clipboard">Ir al Portapapeles</button>
     </div>
 
     <div class="search-container">

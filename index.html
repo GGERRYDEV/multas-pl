@@ -479,74 +479,55 @@
         let clipboard1 = new Set();
         let clipboard2 = new Set();
 
-function renderMultas(query = "") {
-    resultsContainer.innerHTML = "";
-    const filteredMultas = multas.filter(
-        multa => multa.articulo.toLowerCase().includes(query) ||
-                 multa.descripcion.toLowerCase().includes(query)
-    );
+        function renderMultas(query = "") {
+            resultsContainer.innerHTML = "";
+            const filteredMultas = multas.filter(
+                multa => multa.articulo.toLowerCase().includes(query) ||
+                         multa.descripcion.toLowerCase().includes(query)
+            );
 
-    if (filteredMultas.length === 0) {
-        resultsContainer.textContent = "No se encontraron resultados.";
-        return;
-    }
+            if (filteredMultas.length === 0) {
+                resultsContainer.textContent = "No se encontraron resultados.";
+                return;
+            }
 
-    filteredMultas.forEach(multa => {
-        const div = document.createElement("div");
-        div.className = "result-item";
-        const isRange = multa.multa.includes("-");
+            filteredMultas.forEach(multa => {
+                const div = document.createElement("div");
+                div.className = "result-item";
+                const isRange = multa.multa.includes("-");
 
-        if (isRange) {
-            const [min, max] = multa.multa.replace("€", "").split("-").map(num => parseInt(num.trim(), 10));
-            div.innerHTML = `
-                ${multa.articulo} - ${multa.descripcion}: ${min}-${max} €
-                <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
-                <button class="add-button">Agregar</button>
-                <button class="delete-button">Eliminar</button>
-            `;
-            const input = div.querySelector("input");
-            const addButton = div.querySelector(".add-button");
-            const deleteButton = div.querySelector(".delete-button");
-
-            // Botón Agregar
-            addButton.addEventListener("click", () => {
-                const value = parseInt(input.value, 10);
-                const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
-
-                if (isNaN(value) || value < min || value > max) {
-                    alert(`Por favor, selecciona un valor válido entre ${min} y ${max} €.`);
-                } else if (clipboard1.has(key) || clipboard2.has(key)) {
-                    alert("Este artículo ya está en el portapapeles.");
+                if (isRange) {
+                    const [min, max] = multa.multa.replace("€", "").split("-").map(num => parseInt(num.trim(), 10));
+                    div.innerHTML = `
+                        ${multa.articulo} - ${multa.descripcion}: ${min}-${max} €
+                        <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
+                        <button>Agregar</button>
+                    `;
+                    const input = div.querySelector("input");
+                    const button = div.querySelector("button");
+                    button.addEventListener("click", () => {
+                        const value = parseInt(input.value, 10);
+                        const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
+                        if (isNaN(value) || value < min || value > max) {
+                            alert(`Por favor, selecciona un valor válido entre ${min} y ${max} €.`);
+                        } else if (clipboard1.has(key) || clipboard2.has(key)) {
+                            alert("Este artículo ya está en el portapapeles.");
+                        } else {
+                            clipboard1.add(key);
+                            clipboard2.add(key);
+                            div.classList.add("selected");
+                            updateClipboard();
+                        }
+                    });
                 } else {
-                    clipboard1.add(key);
-                    clipboard2.add(key);
-                    div.classList.add("selected");
-                    updateClipboard();
+                    div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                    div.addEventListener("click", () => toggleClipboard(div, multa));
                 }
-            });
 
-            // Botón Eliminar
-            deleteButton.addEventListener("click", () => {
-                const value = parseInt(input.value, 10);
-                const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
-
-                if (clipboard1.has(key) || clipboard2.has(key)) {
-                    clipboard1.delete(key);
-                    clipboard2.delete(key);
-                    div.classList.remove("selected");
-                    updateClipboard();
-                } else {
-                    alert("Este artículo no está en el portapapeles.");
-                }
+                resultsContainer.appendChild(div);
             });
-        } else {
-            div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-            div.addEventListener("click", () => toggleClipboard(div, multa));
         }
 
-        resultsContainer.appendChild(div);
-    });
-}
         function toggleClipboard(element, multa) {
             const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
             if (clipboard1.has(key) || clipboard2.has(key)) {

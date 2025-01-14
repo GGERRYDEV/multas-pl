@@ -581,31 +581,26 @@
             });
         }
 
-        copyButton1.addEventListener("click", () => {
-            const text = Array.from(clipboard1).join("\n");
-            if (text) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert("Contenido copiado al portapapeles.");
-                });
-            } else {
-                alert("No hay contenido para copiar.");
-            }
-        });
+copyButton1.addEventListener("click", () => {
+    const headerText = "/multas poner usuario: razon:"; // Texto fijo o dinámico según necesites
+    const text = Array.from(clipboard1).join("\n");
+    const fullText = text ? `${headerText}\n\n${text}` : headerText;
 
-        copyButton2.addEventListener("click", () => {
-            const text = Array.from(clipboard2).join("\n");
-            if (text) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert("Contenido copiado al portapapeles.");
-                });
-            } else {
-                alert("No hay contenido para copiar.");
-            }
-        });
+    navigator.clipboard.writeText(fullText).then(() => {
+        alert("Contenido copiado al portapapeles.");
+    });
+});
 
-        document.getElementById("search-input").addEventListener("input", (e) => {
-            renderMultas(e.target.value.toLowerCase());
-        });
+copyButton2.addEventListener("click", () => {
+    const headerText = "/arrestar usuario: razon:"; // Texto fijo o dinámico según necesites
+    const text = Array.from(clipboard2).join("\n");
+    const fullText = text ? `${headerText}\n\n${text}` : headerText;
+
+    navigator.clipboard.writeText(fullText).then(() => {
+        alert("Contenido copiado al portapapeles.");
+    });
+});
+
 
         renderMultas();
     });

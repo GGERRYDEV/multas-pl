@@ -509,7 +509,8 @@
                         if (isNaN(value) || value < min || value > max) {
                             alert(`Por favor, selecciona un valor válido entre ${min} y ${max} €.`);
                         } else {
-                            addToClipboard(`${multa.articulo} - ${multa.descripcion}: ${value} €`, div);
+                            const itemText = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
+                            addToClipboard(itemText, div);
                         }
                     });
                 } else {
@@ -599,6 +600,5 @@
         renderMultas();
     });
 </script>
-
 </body>
 </html>

@@ -3,27 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Incluir Google Fonts para una fuente similar (Cinzel) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             font-family: "Trajan", "Cinzel", Arial, sans-serif; /* Incluye Trajan si está disponible */
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             font-weight: bold; /* Hace el texto en negrita */
         }
-
         .header {
-            font-family: "Trajan", "Cinzel", Arial, sans-serif; /* Trajan si está disponible, sino Cinzel */
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .negrita {
-            font-weight: bold; /* Aplica negrita */
-            font-size: 18px;  /* Ajusta el tamaño si es necesario */
+            background-color: #0044cc;
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
         }
         .header img {
             position: absolute;
@@ -148,7 +143,6 @@
         <div id="clipboard-content"></div>
         <button id="copy-button" class="copy-button">Copiar al portapapeles</button>
     </div>
-
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const multas = [

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
-        /* Misma configuración de estilos que antes */
         body {
             font-family: "Trajan", "Cinzel", Arial, sans-serif;
             background-color: #f4f4f4;
@@ -516,6 +515,7 @@
                         } else {
                             clipboard1.add(key);
                             clipboard2.add(key);
+                            div.classList.add("selected");
                             updateClipboard();
                         }
                     });
@@ -560,7 +560,11 @@
                     deleteButton.addEventListener("click", () => {
                         clipboard1.delete(item);
                         clipboard2.delete(item);
-                        renderMultas(document.getElementById("search-input").value.toLowerCase());
+                        document.querySelectorAll(".result-item").forEach(el => {
+                            if (el.textContent.includes(item.split(":")[0])) {
+                                el.classList.remove("selected");
+                            }
+                        });
                         updateClipboard();
                     });
 

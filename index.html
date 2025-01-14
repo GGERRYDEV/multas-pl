@@ -473,12 +473,10 @@
         ];
 
         const resultsContainer = document.getElementById("results");
-        const clipboardContent1 = document.getElementById("clipboard-content1");
-        const clipboardContent2 = document.getElementById("clipboard-content2");
-        const copyButton1 = document.getElementById("copy-button1");
-        const copyButton2 = document.getElementById("copy-button2");
-        let clipboard1 = new Set();
-        let clipboard2 = new Set();
+        const clipboard1Content = document.getElementById("clipboard1-content");
+        const clipboard2Content = document.getElementById("clipboard2-content");
+        const clipboard1 = new Map();
+        const clipboard2 = new Map();
 
         function renderMultas(query = "") {
             resultsContainer.innerHTML = "";
@@ -502,26 +500,20 @@
                     div.innerHTML = `
                         ${multa.articulo} - ${multa.descripcion}: ${min}-${max} €
                         <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
-                        <button>Agregar</button>
+                        <button class="add-btn">Agregar</button>
                     `;
                     const input = div.querySelector("input");
-                    const button = div.querySelector("button");
+                    const button = div.querySelector(".add-btn");
                     button.addEventListener("click", () => {
                         const value = parseInt(input.value, 10);
-                        const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
                         if (isNaN(value) || value < min || value > max) {
                             alert(`Por favor, selecciona un valor válido entre ${min} y ${max} €.`);
-                        } else if (clipboard1.has(key) || clipboard2.has(key)) {
-                            alert("Este artículo ya está en el portapapeles.");
                         } else {
-                            clipboard1.add(key);
-                            clipboard2.add(key);
-                            div.classList.add("selected"); // Se aplica la clase 'selected'
-                            updateClipboard();
+                            addToClipboard(`${multa.articulo} - ${multa.descripcion}: ${value} €`, div);
                         }
                     });
                 } else {
-                    div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+                    div.innerHTML = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
                     div.addEventListener("click", () => toggleClipboard(div, multa));
                 }
 
@@ -531,92 +523,74 @@
 
         function toggleClipboard(element, multa) {
             const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-            if (clipboard1.has(key) || clipboard2.has(key)) {
+            if (clipboard1.has(key)) {
                 clipboard1.delete(key);
                 clipboard2.delete(key);
                 element.classList.remove("selected");
             } else {
-                clipboard1.add(key);
-                clipboard2.add(key);
+                clipboard1.set(key, key);
+                clipboard2.set(key, key);
                 element.classList.add("selected");
             }
             updateClipboard();
         }
 
-        function updateClipboard() {
-            clipboardContent1.innerHTML = "";
-            clipboardContent2.innerHTML = "";
-            const updateClipboardContent = (clipboard, content) => {
-                if (clipboard.size === 0) {
-                    content.textContent = "No hay multas seleccionadas.";
-                    return;
-                }
-                clipboard.forEach(item => {
-                    const div = document.createElement("div");
-                    div.className = "clipboard-item";
-                    div.textContent = item;
-
-                    const deleteButton = document.createElement("button");
-                    deleteButton.textContent = "Eliminar";
-                    deleteButton.addEventListener("click", () => {
-                        clipboard1.delete(item);
-                        clipboard2.delete(item);
-                        removeSelectedItem(item);
-                        updateClipboard();
-                    });
-
-                    div.appendChild(deleteButton);
-                    content.appendChild(div);
-                });
-            };
-            updateClipboardContent(clipboard1, clipboardContent1);
-            updateClipboardContent(clipboard2, clipboardContent2);
+        function addToClipboard(item, element) {
+            if (!clipboard1.has(item)) {
+                clipboard1.set(item, item);
+                clipboard2.set(item, item);
+                element.classList.add("selected");
+            } else {
+                alert("Este artículo ya está en el portapapeles.");
+            }
+            updateClipboard();
         }
 
-function removeSelectedItem(item) {
-    // Localiza el artículo en los resultados y quita la clase 'selected' si existe
-    const items = Array.from(document.querySelectorAll(".result-item"));
-    items.forEach(element => {
-        if (item.includes("-")) {
-            // Para los artículos con importes personalizados, buscar un valor aproximado
-            const rangePattern = item.match(/(\d+)-(\d+)/);
-            if (rangePattern) {
-                const rangeText = `${rangePattern[1]}-${rangePattern[2]} €`;
-                if (element.textContent.includes(rangeText)) {
+        function updateClipboard() {
+            clipboard1Content.innerHTML = "";
+            clipboard2Content.innerHTML = "";
+
+            if (clipboard1.size === 0) {
+                clipboard1Content.textContent = "No hay multas seleccionadas.";
+                clipboard2Content.textContent = "No hay multas seleccionadas.";
+                return;
+            }
+
+            clipboard1.forEach(item => {
+                const div1 = createClipboardItem(item);
+                const div2 = createClipboardItem(item);
+
+                clipboard1Content.appendChild(div1);
+                clipboard2Content.appendChild(div2);
+            });
+        }
+
+        function createClipboardItem(item) {
+            const div = document.createElement("div");
+            div.className = "clipboard-item";
+            div.textContent = item;
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Eliminar";
+            deleteButton.addEventListener("click", () => {
+                clipboard1.delete(item);
+                clipboard2.delete(item);
+                updateSelectedState(item);
+                updateClipboard();
+            });
+
+            div.appendChild(deleteButton);
+            return div;
+        }
+
+        function updateSelectedState(item) {
+            const elements = document.querySelectorAll(".result-item");
+            elements.forEach(element => {
+                if (element.textContent.includes(item.split(":")[0].trim())) {
                     element.classList.remove("selected");
                 }
-            }
-        } else {
-            // Para los artículos normales
-            if (element.textContent.includes(item)) {
-                element.classList.remove("selected");
-            }
+            });
         }
-    });
-}
-
-
-        copyButton1.addEventListener("click", () => {
-            const text = Array.from(clipboard1).join("\n");
-            if (text) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert("Contenido copiado al portapapeles.");
-                });
-            } else {
-                alert("No hay contenido para copiar.");
-            }
-        });
-
-        copyButton2.addEventListener("click", () => {
-            const text = Array.from(clipboard2).join("\n");
-            if (text) {
-                navigator.clipboard.writeText(text).then(() => {
-                    alert("Contenido copiado al portapapeles.");
-                });
-            } else {
-                alert("No hay contenido para copiar.");
-            }
-        });
 
         document.getElementById("search-input").addEventListener("input", (e) => {
             renderMultas(e.target.value.toLowerCase());
@@ -625,5 +599,6 @@ function removeSelectedItem(item) {
         renderMultas();
     });
 </script>
+
 </body>
 </html>

@@ -150,11 +150,10 @@
     
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    function scrollToTopOnRefresh() {
-        window.scrollTo(0, 0); // Lleva la página a la posición superior
-    }
-
-    scrollToTopOnRefresh(); // Llamamos a la función aquí
+    // Asegura que al recargar la página se vaya al inicio
+    window.addEventListener("beforeunload", () => {
+        window.scrollTo(0, 0);
+    });
         const multas = [
 { articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
 { articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },

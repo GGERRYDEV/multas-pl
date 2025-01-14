@@ -573,15 +573,28 @@
             updateClipboardContent(clipboard2, clipboardContent2);
         }
 
-        function removeSelectedItem(item) {
-            // Localiza el artículo en los resultados y quita la clase 'selected' si existe
-            const items = Array.from(document.querySelectorAll(".result-item"));
-            items.forEach(element => {
-                if (element.textContent.includes(item)) {
+function removeSelectedItem(item) {
+    // Localiza el artículo en los resultados y quita la clase 'selected' si existe
+    const items = Array.from(document.querySelectorAll(".result-item"));
+    items.forEach(element => {
+        if (item.includes("-")) {
+            // Para los artículos con importes personalizados, buscar un valor aproximado
+            const rangePattern = item.match(/(\d+)-(\d+)/);
+            if (rangePattern) {
+                const rangeText = `${rangePattern[1]}-${rangePattern[2]} €`;
+                if (element.textContent.includes(rangeText)) {
                     element.classList.remove("selected");
                 }
-            });
+            }
+        } else {
+            // Para los artículos normales
+            if (element.textContent.includes(item)) {
+                element.classList.remove("selected");
+            }
         }
+    });
+}
+
 
         copyButton1.addEventListener("click", () => {
             const text = Array.from(clipboard1).join("\n");

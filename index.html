@@ -516,6 +516,7 @@
                         } else {
                             clipboard1.add(key);
                             clipboard2.add(key);
+                            div.classList.add("selected"); // Se aplica la clase 'selected'
                             updateClipboard();
                         }
                     });
@@ -560,8 +561,7 @@
                     deleteButton.addEventListener("click", () => {
                         clipboard1.delete(item);
                         clipboard2.delete(item);
-                        updateSelectedItems(item);
-                        renderMultas(document.getElementById("search-input").value.toLowerCase());
+                        removeSelectedItem(item);
                         updateClipboard();
                     });
 
@@ -573,8 +573,8 @@
             updateClipboardContent(clipboard2, clipboardContent2);
         }
 
-        function updateSelectedItems(item) {
-            // Remueve la clase "selected" solo de los elementos que coincidan con el item eliminado
+        function removeSelectedItem(item) {
+            // Localiza el artículo en los resultados y quita la clase 'selected' si existe
             const items = Array.from(document.querySelectorAll(".result-item"));
             items.forEach(element => {
                 if (element.textContent.includes(item)) {

@@ -493,22 +493,31 @@
                 div.className = "result-item";
                 div.innerHTML = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
                 if (multa.multa.includes("-")) {
+                    const [min, max] = multa.multa.split("-").map(v => parseInt(v));
                     const input = document.createElement("input");
                     input.type = "number";
-                    input.placeholder = "Importe";
+                    input.placeholder = `Entre ${min} y ${max}`;
+                    input.min = min;
+                    input.max = max;
                     input.addEventListener("input", () => multa.multa = input.value + " €");
                     div.appendChild(input);
                 }
-                div.addEventListener("click", () => addToBothClipboards(div, multa));
+                div.addEventListener("click", () => toggleMulta(div, multa));
                 resultsContainer.appendChild(div);
             });
         }
 
-        function addToBothClipboards(element, multa) {
+        function toggleMulta(element, multa) {
             const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-            clipboard.set(key, key);
-            clipboard2.set(key, key);
-            element.classList.add("selected");
+            if (clipboard.has(key)) {
+                clipboard.delete(key);
+                clipboard2.delete(key);
+                element.classList.remove("selected");
+            } else {
+                clipboard.set(key, key);
+                clipboard2.set(key, key);
+                element.classList.add("selected");
+            }
             updateClipboard();
         }
 
@@ -529,6 +538,11 @@
             deleteButton.addEventListener("click", () => {
                 clipboard.delete(item);
                 clipboard2.delete(item);
+                document.querySelectorAll(".result-item").forEach(el => {
+                    if (el.textContent.includes(item.split(":")[0])) {
+                        el.classList.remove("selected");
+                    }
+                });
                 updateClipboard();
             });
 

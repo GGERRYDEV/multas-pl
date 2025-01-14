@@ -560,6 +560,7 @@
                     deleteButton.addEventListener("click", () => {
                         clipboard1.delete(item);
                         clipboard2.delete(item);
+                        updateSelectedItems(item);
                         renderMultas(document.getElementById("search-input").value.toLowerCase());
                         updateClipboard();
                     });
@@ -570,6 +571,16 @@
             };
             updateClipboardContent(clipboard1, clipboardContent1);
             updateClipboardContent(clipboard2, clipboardContent2);
+        }
+
+        function updateSelectedItems(item) {
+            // Remueve la clase "selected" solo de los elementos que coincidan con el item eliminado
+            const items = Array.from(document.querySelectorAll(".result-item"));
+            items.forEach(element => {
+                if (element.textContent.includes(item)) {
+                    element.classList.remove("selected");
+                }
+            });
         }
 
         copyButton1.addEventListener("click", () => {

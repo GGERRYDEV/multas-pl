@@ -147,8 +147,14 @@
         <div id="clipboard-content2"></div>
         <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
     </div>
+    
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
+    function scrollToTopOnRefresh() {
+        window.scrollTo(0, 0); // Lleva la página a la posición superior
+    }
+
+    scrollToTopOnRefresh(); // Llamamos a la función aquí
         const multas = [
 { articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
 { articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },

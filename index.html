@@ -587,16 +587,11 @@ searchInput.addEventListener("input", () => {
 function removeHighlight(item) {
     const items = document.querySelectorAll(".result-item");
     items.forEach(element => {
-        if (element.textContent.includes(item)) {
-            if (item.includes("-")) { // Si tiene "-", es una multa personalizada
-                div.classList.remove("selected"); // Quita el verde de elementos personalizados
-            } else {
-                element.classList.remove("selected"); // Quita el verde de elementos normales
-            }
+        if (element.textContent.trim() === item.trim()) {
+            element.classList.remove("selected"); // Quita el verde del elemento encontrado
         }
     });
 }
-
 
 copyButton1.addEventListener("click", () => {
     const headerText = "/multas poner usuario: razon:"; // Texto fijo o dinámico según necesites

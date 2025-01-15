@@ -538,9 +538,10 @@ searchInput.addEventListener("input", () => {
 function updateClipboard() {
     clipboardContent1.innerHTML = "/multas poner usuario: razon:";
     clipboardContent2.innerHTML = "/arrestar usuario: razon:";
+    
     const updateClipboardContent = (clipboard, content) => {
         if (clipboard.size === 0) {
-            content.textContent = "No hay multas seleccionadas.";
+            content.textContent = "No hay elementos seleccionados.";
             return;
         }
         content.innerHTML = ""; // Limpia el contenido antes de renderizar
@@ -554,8 +555,8 @@ function updateClipboard() {
             deleteButton.addEventListener("click", () => {
                 clipboard1.delete(item);
                 clipboard2.delete(item);
-                removeHighlight(item); // Elimina el color verde
-                updateClipboard(); // Actualiza el portapapeles
+                removeHighlight(item);
+                updateClipboard();
             });
 
             div.appendChild(deleteButton);
@@ -565,8 +566,6 @@ function updateClipboard() {
     updateClipboardContent(clipboard1, clipboardContent1);
     updateClipboardContent(clipboard2, clipboardContent2);
 }
-
-
 const deleteButton = document.createElement("button");
 deleteButton.textContent = "Eliminar";
 deleteButton.addEventListener("click", () => {
@@ -575,15 +574,6 @@ deleteButton.addEventListener("click", () => {
     removeHighlight(item); // Esto desmarca el color verde en la lista
     updateClipboard(); // Actualiza el contenido del portapapeles
 });
-
-
-                    div.appendChild(deleteButton);
-                    content.appendChild(div);
-                });
-            };
-            updateClipboardContent(clipboard1, clipboardContent1);
-            updateClipboardContent(clipboard2, clipboardContent2);
-        }
 
 function removeHighlight(item) {
     const items = document.querySelectorAll(".result-item");

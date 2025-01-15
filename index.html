@@ -584,14 +584,19 @@ searchInput.addEventListener("input", () => {
             updateClipboardContent(clipboard2, clipboardContent2);
         }
 
-        function removeHighlight(item) {
-            const items = document.querySelectorAll(".result-item");
-            items.forEach(element => {
-                if (element.textContent.includes(item)) {
-                    element.classList.remove("selected");
-                }
-            });
+function removeHighlight(item) {
+    const items = document.querySelectorAll(".result-item");
+    items.forEach(element => {
+        if (element.textContent.includes(item)) {
+            if (item.includes("-")) { // Si tiene "-", es una multa personalizada
+                div.classList.remove("selected"); // Quita el verde de elementos personalizados
+            } else {
+                element.classList.remove("selected"); // Quita el verde de elementos normales
+            }
         }
+    });
+}
+
 
 copyButton1.addEventListener("click", () => {
     const headerText = "/multas poner usuario: razon:"; // Texto fijo o dinámico según necesites

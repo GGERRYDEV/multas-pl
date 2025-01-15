@@ -521,6 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             clipboard1.add(key);
                             clipboard2.add(key);
                             element.classList.add("selected");
+                            div.classList.add("selected");
                             updateClipboard();
                         }
                     });
@@ -550,6 +551,7 @@ searchInput.addEventListener("input", () => {
                 clipboard1.add(key);
                 clipboard2.add(key);
                 element.classList.add("selected");
+                div.classList.add("selected");
             }
             updateClipboard();
         }
@@ -588,7 +590,8 @@ function removeHighlight(item) {
     const items = document.querySelectorAll(".result-item");
     items.forEach(element => {
         if (element.textContent.trim() === item.trim()) {
-            element.classList.remove("selected"); // Quita el verde del elemento encontrado
+            element.classList.remove("selected");
+            div.classList.remove("selected");// Quita el verde del elemento encontrado
         }
     });
 }

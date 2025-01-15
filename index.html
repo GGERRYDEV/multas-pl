@@ -520,6 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         } else {
                             clipboard1.add(key);
                             clipboard2.add(key);
+                            element.classList.add("selected");
                             div.classList.add("selected");
                             updateClipboard();
                         }
@@ -563,6 +564,7 @@ function toggleClipboard(element, multa) {
     } else {
         clipboard1.add(key); // Agregar al portapapeles
         element.classList.add("selected"); // Resaltar el elemento
+        div.classList.add("selected");
     }
 
     updateClipboard(); // Actualizar la vista del portapapeles
@@ -605,6 +607,7 @@ function toggleClipboard(element, multa) {
             items.forEach(element => {
                 if (element.textContent.includes(item)) {
                     element.classList.remove("selected");
+                    div.classList.remove("selected");
                 }
             });
         }

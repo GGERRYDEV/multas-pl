@@ -572,6 +572,7 @@ searchInput.addEventListener("input", () => {
                     deleteButton.addEventListener("click", () => {
                         clipboard1.delete(item);
                         clipboard2.delete(item);
+                        element.classList.remove("selected");
                         removeHighlight(item);
                         updateClipboard();
                     });

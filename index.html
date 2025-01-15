@@ -520,7 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         } else {
                             clipboard1.add(key);
                             clipboard2.add(key);
-                            element.classList.add("selected");
+                            div.classList.add("selected");
                             updateClipboard();
                         }
                     });
@@ -540,36 +540,19 @@ searchInput.addEventListener("input", () => {
     renderMultas(query); // Llamar a renderMultas con la búsqueda filtrada
 });
 
-function toggleClipboard(element, multa) {
-    const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-
-    // Detectar si es una multa personalizada
-    const isCustom = multa.descripcion.includes("Importe personalizado");
-
-    // Verificar si ya existe una multa personalizada en el portapapeles
-    const hasCustom = Array.from(clipboard1).some(item => item.includes("Importe personalizado"));
-
-    // Si ya existe una multa personalizada, no permitir agregar otra
-    if (isCustom && hasCustom) {
-        alert("Ya existe una multa personalizada en el portapapeles. Elimine la actual para agregar una nueva.");
-        return; // Salir sin realizar cambios
-    }
-
-    // Alternar entre agregar o eliminar del portapapeles
-    if (clipboard1.has(key)) {
-        clipboard1.delete(key); // Eliminar del portapapeles
-        element.classList.remove("selected"); // Quitar el resaltado
-        div.classList.remove("selected");
-    } else {
-        clipboard1.add(key); // Agregar al portapapeles
-        element.classList.add("selected"); // Resaltar el elemento
-        div.classList.add("selected");
-    }
-
-    updateClipboard(); // Actualizar la vista del portapapeles
-}
-
-
+        function toggleClipboard(element, multa) {
+            const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+            if (clipboard1.has(key) || clipboard2.has(key)) {
+                clipboard1.delete(key);
+                clipboard2.delete(key);
+                element.classList.remove("selected");
+            } else {
+                clipboard1.add(key);
+                clipboard2.add(key);
+                element.classList.add("selected");
+            }
+            updateClipboard();
+        }
 
         function updateClipboard() {
             clipboardContent1.innerHTML = "/multas poner usuario: razon:";
@@ -606,7 +589,6 @@ function toggleClipboard(element, multa) {
             items.forEach(element => {
                 if (element.textContent.includes(item)) {
                     element.classList.remove("selected");
-                    div.classList.remove("selected");
                 }
             });
         }

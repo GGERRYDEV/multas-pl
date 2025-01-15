@@ -577,15 +577,6 @@ deleteButton.addEventListener("click", () => {
     updateClipboard(); // Actualiza el contenido del portapapeles
 });
 
-
-                    div.appendChild(deleteButton);
-                    content.appendChild(div);
-                });
-            };
-            updateClipboardContent(clipboard1, clipboardContent1);
-            updateClipboardContent(clipboard2, clipboardContent2);
-        }
-
 function removeHighlight(item) {
     const items = document.querySelectorAll(".result-item");
     items.forEach(element => {

@@ -484,54 +484,29 @@ document.addEventListener("DOMContentLoaded", () => {
         let clipboard1 = new Set();
         let clipboard2 = new Set();
 
-        function renderMultas(query = "") {
-            resultsContainer.innerHTML = "";
-            const filteredMultas = multas.filter(
-                multa => multa.articulo.toLowerCase().includes(query) ||
-                         multa.descripcion.toLowerCase().includes(query)
-            );
+function renderMultas(query = "") {
+    resultsContainer.innerHTML = ""; // Limpia el contenedor antes de renderizar
+    const filteredMultas = multas.filter(
+        multa => multa.articulo.toLowerCase().includes(query) ||
+                 multa.descripcion.toLowerCase().includes(query)
+    );
 
-            if (filteredMultas.length === 0) {
-                resultsContainer.textContent = "No se encontraron resultados.";
-                return;
-            }
+    if (filteredMultas.length === 0) {
+        resultsContainer.textContent = "No se encontraron resultados.";
+        return;
+    }
 
-            filteredMultas.forEach(multa => {
-                const div = document.createElement("div");
-                div.className = "result-item";
-                const isRange = multa.multa.includes("-");
+    filteredMultas.forEach(multa => {
+        const div = document.createElement("div");
+        div.className = "result-item";
+        const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
 
-                if (isRange) {
-                    const [min, max] = multa.multa.replace("€", "").split("-").map(num => parseInt(num.trim(), 10));
-                    div.innerHTML = `
-                        ${multa.articulo} - ${multa.descripcion}: ${min}-${max} €
-                        <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
-                        <button>Agregar</button>
-                    `;
-                    const input = div.querySelector("input");
-                    const button = div.querySelector("button");
-                    button.addEventListener("click", () => {
-                        const value = parseInt(input.value, 10);
-                        const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
-                        if (isNaN(value) || value < min || value > max) {
-                            alert(`Por favor, selecciona un valor válido entre ${min} y ${max} €.`);
-                        } else if (clipboard1.has(key) || clipboard2.has(key)) {
-                            alert("Este artículo ya está en el portapapeles.");
-                        } else {
-                            clipboard1.add(key);
-                            clipboard2.add(key);
-                            div.classList.add("selected");
-                            updateClipboard();
-                        }
-                    });
-                } else {
-                    div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                    div.addEventListener("click", () => toggleClipboard(div, multa));
-                }
+        div.textContent = key;
 
-                resultsContainer.appendChild(div);
-            });
-        }
+        // Si el elemento ya está en el portapapeles, márcalo como seleccionado
+        if (clipboard1.has(key) || clipboard2.has(key)) {
+            div
+
 const searchInput = document.getElementById("search-input");
 
 // Escuchar los eventos de entrada en el buscador
@@ -562,6 +537,7 @@ function updateClipboard() {
             content.textContent = "No hay multas seleccionadas.";
             return;
         }
+        content.innerHTML = ""; // Limpia el contenido antes de renderizar
         clipboard.forEach(item => {
             const div = document.createElement("div");
             div.className = "clipboard-item";
@@ -572,8 +548,8 @@ function updateClipboard() {
             deleteButton.addEventListener("click", () => {
                 clipboard1.delete(item);
                 clipboard2.delete(item);
-                removeHighlight(item); // Quita el verde en la lista
-                updateClipboard(); // Refresca el portapapeles
+                removeHighlight(item); // Elimina el color verde
+                updateClipboard(); // Actualiza el portapapeles
             });
 
             div.appendChild(deleteButton);
@@ -583,6 +559,7 @@ function updateClipboard() {
     updateClipboardContent(clipboard1, clipboardContent1);
     updateClipboardContent(clipboard2, clipboardContent2);
 }
+
 
 const deleteButton = document.createElement("button");
 deleteButton.textContent = "Eliminar";
@@ -603,13 +580,14 @@ deleteButton.addEventListener("click", () => {
         }
 
 function removeHighlight(item) {
-    const items = document.querySelectorAll(".result-item"); // Selecciona todos los elementos de la lista
+    const items = document.querySelectorAll(".result-item");
     items.forEach(element => {
         if (element.textContent.includes(item)) {
-            element.classList.remove("selected"); // Quita la clase `selected`
+            element.classList.remove("selected"); // Elimina la clase `selected` si el texto coincide
         }
     });
 }
+
 
 
 copyButton1.addEventListener("click", () => {

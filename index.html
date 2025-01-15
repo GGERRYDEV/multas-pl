@@ -544,29 +544,29 @@ function toggleClipboard(element, multa) {
     const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
 
     // Detectar si es una multa personalizada
-    const isCustom = key.includes("Importe personalizado");
+    const isCustom = multa.descripcion.includes("Importe personalizado");
 
-    // Verificar si ya hay una multa personalizada en el portapapeles
+    // Verificar si ya existe una multa personalizada en el portapapeles
     const hasCustom = Array.from(clipboard1).some(item => item.includes("Importe personalizado"));
 
+    // Si ya existe una multa personalizada, no permitir agregar otra
     if (isCustom && hasCustom) {
-        alert("Ya existe una multa personalizada. Elimine la actual para agregar una nueva.");
-        return; // Salir sin agregar al portapapeles
+        alert("Ya existe una multa personalizada en el portapapeles. Elimine la actual para agregar una nueva.");
+        return; // Salir sin realizar cambios
     }
 
     // Alternar entre agregar o eliminar del portapapeles
-    if (clipboard1.has(key) || clipboard2.has(key)) {
-        clipboard1.delete(key);
-        clipboard2.delete(key);
-        element.classList.remove("selected");
+    if (clipboard1.has(key)) {
+        clipboard1.delete(key); // Eliminar del portapapeles
+        element.classList.remove("selected"); // Quitar el resaltado
     } else {
-        clipboard1.add(key);
-        clipboard2.add(key);
-        element.classList.add("selected");
+        clipboard1.add(key); // Agregar al portapapeles
+        element.classList.add("selected"); // Resaltar el elemento
     }
 
-    updateClipboard(); // Actualizar el portapapeles
+    updateClipboard(); // Actualizar la vista del portapapeles
 }
+
 
 
         function updateClipboard() {

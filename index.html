@@ -163,11 +163,32 @@
         
     </style>
 </head>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secciones de Multas</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+        .active {
+            font-weight: bold;
+            color: blue;
+        }
+    </style>
+</head>
 <body>
+    
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
         <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
     </div>
+        <button id="tab-normal" class="active">Multas Normales</button>
+    <button id="tab-preconfigured">Multas Preconfiguradas</button>
+
+    <div id="section-normal">
+        <h2>Sección de Multas Normales</h2>
+        <!-- Contenido de multas normales -->
+    
     <div class="search-container">
         <input id="search-input" type="text" placeholder="Buscar multas..." />
         <button class="goto-clipboard" onclick="document.getElementById('clipboard1').scrollIntoView()">Ir al Portapapeles</button>
@@ -187,35 +208,46 @@
     <h2>Total de Multas</h2>
     <p id="total-amount">Total: 0 €</p>
     <p id="total-count">Artículos seleccionados: 0</p>
+        </div>
 </div>
+        <div id="section-preconfigured" class="hidden">
+        <h2>Sección de Multas Preconfiguradas</h2>
+        <!-- Contenido de multas preconfiguradas -->
+    </div>
 <script>
     
-document.addEventListener("DOMContentLoaded", () => {
-    const tabNormal = document.getElementById("tab-normal");
-    const tabPreconfigured = document.getElementById("tab-preconfigured");
-    const sectionNormal = document.getElementById("section-normal");
-    const sectionPreconfigured = document.getElementById("section-preconfigured");
+        document.addEventListener("DOMContentLoaded", () => {
+            const tabNormal = document.getElementById("tab-normal");
+            const tabPreconfigured = document.getElementById("tab-preconfigured");
+            const sectionNormal = document.getElementById("section-normal");
+            const sectionPreconfigured = document.getElementById("section-preconfigured");
 
-    if (!tabNormal || !tabPreconfigured || !sectionNormal || !sectionPreconfigured) {
-        console.error("Algunos elementos no se encontraron en el DOM");
-        return;
-    }
+            console.log("tabNormal:", tabNormal);
+            console.log("tabPreconfigured:", tabPreconfigured);
+            console.log("sectionNormal:", sectionNormal);
+            console.log("sectionPreconfigured:", sectionPreconfigured);
 
-    function switchSection(activeTab, activeSection, inactiveTab, inactiveSection) {
-        activeTab.classList.add("active");
-        inactiveTab.classList.remove("active");
-        activeSection.classList.remove("hidden");
-        inactiveSection.classList.add("hidden");
-    }
+            if (!tabNormal || !tabPreconfigured || !sectionNormal || !sectionPreconfigured) {
+                console.error("Algunos elementos no se encontraron en el DOM");
+                return;
+            }
 
-    tabNormal.addEventListener("click", () => {
-        switchSection(tabNormal, sectionNormal, tabPreconfigured, sectionPreconfigured);
-    });
+            function switchSection(activeTab, activeSection, inactiveTab, inactiveSection) {
+                activeTab.classList.add("active");
+                inactiveTab.classList.remove("active");
+                activeSection.classList.remove("hidden");
+                inactiveSection.classList.add("hidden");
+            }
 
-    tabPreconfigured.addEventListener("click", () => {
-        switchSection(tabPreconfigured, sectionPreconfigured, tabNormal, sectionNormal);
-    });
-});
+            tabNormal.addEventListener("click", () => {
+                switchSection(tabNormal, sectionNormal, tabPreconfigured, sectionPreconfigured);
+            });
+
+            tabPreconfigured.addEventListener("click", () => {
+                switchSection(tabPreconfigured, sectionPreconfigured, tabNormal, sectionNormal);
+            });
+        });
+    
     console.log(tabNormal, tabPreconfigured, sectionNormal, sectionPreconfigured);
 
 document.addEventListener("DOMContentLoaded", () => {

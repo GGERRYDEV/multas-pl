@@ -128,11 +128,6 @@
     </style>
 </head>
 <body>
-    <div id="totals" class="clipboard">
-    <h2>Total de Multas</h2>
-    <p id="total-amount">Total: 0 €</p>
-    <p id="total-count">Artículos seleccionados: 0</p>
-</div>
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
         <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
@@ -152,7 +147,11 @@
         <div id="clipboard-content2"></div>
         <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
     </div>
-    
+        <div id="totals" class="clipboard">
+    <h2>Total de Multas</h2>
+    <p id="total-amount">Total: 0 €</p>
+    <p id="total-count">Artículos seleccionados: 0</p>
+</div>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     // Asegura que al recargar la página se vaya al inicio

@@ -160,6 +160,7 @@
         .copy-button:hover {
             background-color: #0033aa;
         }
+        
     </style>
 </head>
 <body>
@@ -188,22 +189,25 @@
     <p id="total-count">Artículos seleccionados: 0</p>
 </div>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    
+document.addEventListener("DOMContentLoaded", () => {
     const tabNormal = document.getElementById("tab-normal");
     const tabPreconfigured = document.getElementById("tab-preconfigured");
     const sectionNormal = document.getElementById("section-normal");
     const sectionPreconfigured = document.getElementById("section-preconfigured");
 
-    // Función para alternar secciones
+    if (!tabNormal || !tabPreconfigured || !sectionNormal || !sectionPreconfigured) {
+        console.error("Algunos elementos no se encontraron en el DOM");
+        return;
+    }
+
     function switchSection(activeTab, activeSection, inactiveTab, inactiveSection) {
         activeTab.classList.add("active");
         inactiveTab.classList.remove("active");
-
         activeSection.classList.remove("hidden");
         inactiveSection.classList.add("hidden");
     }
 
-    // Event Listeners para cambiar de sección
     tabNormal.addEventListener("click", () => {
         switchSection(tabNormal, sectionNormal, tabPreconfigured, sectionPreconfigured);
     });

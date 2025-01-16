@@ -5,6 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
+        /* Estilo para los botones de sección */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.tab {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.tab.active {
+    background-color: #002a80;
+}
+.tab:hover {
+    background-color: #0033aa;
+}
+
+/* Ocultar las secciones no activas */
+.section {
+    display: none;
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.section:not(.hidden) {
+    display: block;
+}
+
         body {
             font-family: "Trajan", "Cinzel", Arial, sans-serif;
             background-color: #f4f4f4;
@@ -153,6 +188,31 @@
     <p id="total-count">Artículos seleccionados: 0</p>
 </div>
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const tabNormal = document.getElementById("tab-normal");
+    const tabPreconfigured = document.getElementById("tab-preconfigured");
+    const sectionNormal = document.getElementById("section-normal");
+    const sectionPreconfigured = document.getElementById("section-preconfigured");
+
+    // Función para alternar secciones
+    function switchSection(activeTab, activeSection, inactiveTab, inactiveSection) {
+        activeTab.classList.add("active");
+        inactiveTab.classList.remove("active");
+
+        activeSection.classList.remove("hidden");
+        inactiveSection.classList.add("hidden");
+    }
+
+    // Event Listeners para cambiar de sección
+    tabNormal.addEventListener("click", () => {
+        switchSection(tabNormal, sectionNormal, tabPreconfigured, sectionPreconfigured);
+    });
+
+    tabPreconfigured.addEventListener("click", () => {
+        switchSection(tabPreconfigured, sectionPreconfigured, tabNormal, sectionNormal);
+    });
+});
+    
 document.addEventListener("DOMContentLoaded", () => {
     // Asegura que al recargar la página se vaya al inicio
     window.addEventListener("beforeunload", () => {

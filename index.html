@@ -5,41 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
-        /* Estilo para los botones de sección */
-.tabs {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
-.tab {
-    padding: 10px 20px;
-    margin: 0 5px;
-    background-color: #0044cc;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-.tab.active {
-    background-color: #002a80;
-}
-.tab:hover {
-    background-color: #0033aa;
-}
-
-/* Ocultar las secciones no activas */
-.section {
-    display: none;
-    padding: 20px;
-    background: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-.section:not(.hidden) {
-    display: block;
-}
-
         body {
             font-family: "Trajan", "Cinzel", Arial, sans-serif;
             background-color: #f4f4f4;
@@ -160,35 +125,13 @@
         .copy-button:hover {
             background-color: #0033aa;
         }
-        
-    </style>
-</head>
-        <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secciones de Multas</title>
-    <style>
-        .hidden {
-            display: none;
-        }
-        .active {
-            font-weight: bold;
-            color: blue;
-        }
     </style>
 </head>
 <body>
-    
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
         <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
     </div>
-        <button id="tab-normal" class="active">Multas Normales</button>
-    <button id="tab-preconfigured">Multas Preconfiguradas</button>
-
-    <div id="section-normal">
-        <h2>Sección de Multas Normales</h2>
-        <!-- Contenido de multas normales -->
-    
     <div class="search-container">
         <input id="search-input" type="text" placeholder="Buscar multas..." />
         <button class="goto-clipboard" onclick="document.getElementById('clipboard1').scrollIntoView()">Ir al Portapapeles</button>
@@ -208,48 +151,8 @@
     <h2>Total de Multas</h2>
     <p id="total-amount">Total: 0 €</p>
     <p id="total-count">Artículos seleccionados: 0</p>
-        </div>
 </div>
-        <div id="section-preconfigured" class="hidden">
-        <h2>Sección de Multas Preconfiguradas</h2>
-        <!-- Contenido de multas preconfiguradas -->
-    </div>
 <script>
-    
-        document.addEventListener("DOMContentLoaded", () => {
-            const tabNormal = document.getElementById("tab-normal");
-            const tabPreconfigured = document.getElementById("tab-preconfigured");
-            const sectionNormal = document.getElementById("section-normal");
-            const sectionPreconfigured = document.getElementById("section-preconfigured");
-
-            console.log("tabNormal:", tabNormal);
-            console.log("tabPreconfigured:", tabPreconfigured);
-            console.log("sectionNormal:", sectionNormal);
-            console.log("sectionPreconfigured:", sectionPreconfigured);
-
-            if (!tabNormal || !tabPreconfigured || !sectionNormal || !sectionPreconfigured) {
-                console.error("Algunos elementos no se encontraron en el DOM");
-                return;
-            }
-
-            function switchSection(activeTab, activeSection, inactiveTab, inactiveSection) {
-                activeTab.classList.add("active");
-                inactiveTab.classList.remove("active");
-                activeSection.classList.remove("hidden");
-                inactiveSection.classList.add("hidden");
-            }
-
-            tabNormal.addEventListener("click", () => {
-                switchSection(tabNormal, sectionNormal, tabPreconfigured, sectionPreconfigured);
-            });
-
-            tabPreconfigured.addEventListener("click", () => {
-                switchSection(tabPreconfigured, sectionPreconfigured, tabNormal, sectionNormal);
-            });
-        });
-    
-    console.log(tabNormal, tabPreconfigured, sectionNormal, sectionPreconfigured);
-
 document.addEventListener("DOMContentLoaded", () => {
     // Asegura que al recargar la página se vaya al inicio
     window.addEventListener("beforeunload", () => {

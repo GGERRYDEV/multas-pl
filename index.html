@@ -5,160 +5,386 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Multas de la Policía Local</title>
     <style>
-        body {
-            font-family: "Trajan", "Cinzel", Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            font-weight: bold;
-        }
-        .header {
-            background-color: #0044cc;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-        .header img {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 120px;
-            height: 95px;
-            background: white;
-            border-radius: 15px;
-            padding: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .search-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px;
-            gap: 10px;
-        }
-        .search-container input {
-            width: 300px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        .goto-clipboard {
-            background-color: #0044cc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .goto-clipboard:hover {
-            background-color: #0033aa;
-        }
-        .results {
-            margin: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+/* Estilos generales */
+body {
+    font-family: "Trajan", "Cinzel", Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+/* Estilos para el encabezado */
+.header {
+    background-color: #0044cc;
+    color: white;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.header img {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 120px;
+    height: 95px;
+    background: white;
+    border-radius: 15px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para los botones de navegación */
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+    gap: 15px;
+}
+
+.nav-buttons button {
+    padding: 10px 20px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.nav-buttons button:hover {
+    background-color: #0033aa;
+}
+
+/* Estilo para las secciones */
+.section {
+    display: none; /* Ocultar por defecto */
+    padding: 20px;
+}
+
+.section.active {
+    display: block; /* Mostrar solo la activa */
+}
+
+/* Estilo del buscador */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    gap: 10px;
+}
+
+.search-container input {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.search-container button:hover {
+    background-color: #0033aa;
+}
+
+/* Estilo de los resultados */
+.results {
+    max-width: 2000px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.result-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background-color 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+.result-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Selección */
+.result-item.selected {
+    background-color: #e9ffe9; /* Resaltar cuando está seleccionado */
+}
+
+/* Evitar que el hover sobrescriba el color de selección */
+.result-item.selected:hover {
+    background-color: #e9ffe9 !important; /* Asegura que el color verde se mantenga al pasar el ratón */
+}
+
+/* Estilo para el portapapeles */
+.clipboard {
+    margin: 20px;
+    padding: 20px;
+    background: #e9ffe9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.clipboard h2 {
+    margin-top: 0;
+}
+
+.clipboard-item {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.clipboard-item button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.clipboard-item button:hover {
+    background-color: darkred;
+}
+
+/* Estilo para los botones de copiar */
+.copy-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+.copy-button:hover {
+    background-color: #0033aa;
+}
+
+.copy-button:active {
+    transform: scale(0.98);
+}
+
+/* Estilos de tarjetas */
+.card {
+    background-color: white;
+    border-radius: 4px;
+    padding: 40px;
+    margin: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    width: 300px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.card p {
+    margin: 10px 0;
+    color: #555;
+}
+
+.card button {
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.card button:hover {
+    background-color: #0033aa;
+}
+
+/* Contenedor de botones de copiar */
+.copy-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Contenedor de resultados */
+#results {
+    display: block; /* Hace que los elementos hijos se acomoden de forma vertical */
+    margin: 4;
+    padding: 4;
+}
         .result-item {
-            margin-bottom: 10px;
             padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            transition: background-color 0.3s, border-color 0.3s;
+            margin: 5px;
+            border: 1px solid #ccc;
+            cursor: pointer;
         }
-        .result-item input[type="number"] {
-            margin-left: 10px;
-            width: 100px;
+
+        .selected {
+            background-color: lightgreen;
         }
-        .result-item button {
-            margin-left: 10px;
-            padding: 5px 10px;
-        }
-        .result-item:hover {
-            background-color: #f0f0f0;
-        }
-        .result-item.selected {
-            background-color: #d1e7dd;
-            border-color: #b5d5c9;
-        }
-        .clipboard {
-            margin: 20px;
-            padding: 20px;
-            background: #e9ffe9;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .clipboard h2 {
-            margin-top: 0;
-        }
+
         .clipboard-item {
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
         }
-        .clipboard-item button {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .clipboard-item button:hover {
-            background-color: darkred;
-        }
-        .copy-button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
-            background-color: #0044cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            text-align: center;
-        }
-        .copy-button:hover {
-            background-color: #0033aa;
-        }
+.blue-button {
+    padding: 5px 15px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    float: center;
+}
+.blue-button:hover {
+    background-color: #0033aa;
+}
+.red-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right;
+}
+
+.red-button:hover {
+    background-color: darkred;
+}
+
+
+
     </style>
 </head>
 <body>
+
+    <!-- Sección Encabezado -->
     <div class="header">
         <h1>Calculadora de Multas de la Policía Local</h1>
         <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
     </div>
-    <div class="search-container">
-        <input id="search-input" type="text" placeholder="Buscar multas..." />
-        <button class="goto-clipboard" onclick="document.getElementById('clipboard1').scrollIntoView()">Ir al Portapapeles</button>
+
+    <!-- Sección Botones de Navegación -->
+     
+    <div class="nav-buttons">
+        <button onclick="showSection('multas')">Buscar Multas</button>
+        <button onclick="showSection('premultas')">PreMultas</button>
     </div>
-    <div id="results" class="results"></div>
-    <div id="clipboard1" class="clipboard">
-        <h2>Portapapeles Multas</h2>
-        <div id="clipboard-content1"></div>
-        <button id="copy-button1" class="copy-button">Copiar al portapapeles</button>
-    </div>
-    <div id="clipboard2" class="clipboard">
-        <h2>Portapapeles Arrestos</h2>
-        <div id="clipboard-content2"></div>
-        <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
-    </div>
-        <div id="totals" class="clipboard">
-    <h2>Total de Multas</h2>
-    <p id="total-amount">Total: 0 €</p>
-    <p id="total-count">Artículos seleccionados: 0</p>
-</div>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    // Asegura que al recargar la página se vaya al inicio
-    window.addEventListener("beforeunload", () => {
-        window.scrollTo(0, 0);
+        <!-- Sección multas -->
+        <div id="multas" class="section">
+            <h2>Bienvenido a la Calculadora de Multas de la Policía Local</h2>
+            <p>Aquí puedes conseguir las multas que desees.</p>
+    
+            <!-- Zona para buscar multas -->
+            <div class="search-container">
+                <input id="search-input" type="text" placeholder="Buscar multas..." />
+                <button class="goto-clipboard" onclick="document.getElementById('clipboard1').scrollIntoView()">Ir al Portapapeles</button>
+            </div>
+            
+            <!-- Resultados de la búsqueda -->
+            <div id="results" class="results"></div>
+            <!-- Portapapeles para mostrar las multas seleccionadas -->
+            <div id="clipboard1" class="clipboard">
+                <h2>Portapapeles Multas</h2>
+                <div id="clipboard-content1"></div>
+                <button id="copy-button1" class="copy-button">Copiar al portapapeles</button>
+            </div>
+    
+            <!-- Portapapeles para mostrar arrestos -->
+            <div id="clipboard2" class="clipboard">
+                <h2>Portapapeles Arrestos</h2>
+                <div id="clipboard-content2"></div>
+                <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
+            </div>
+    
+            <!-- Total de Multas -->
+            <div id="totals" class="clipboard">
+                <h2>Total de Multas</h2>
+                <p id="total-amount">Total: 0 €</p>
+                <p id="total-count">Artículos seleccionados: 0</p>
+            </div>
+            <h2>Hecho por: GERRY</h2>
+        </div>
+        <!-- Sección Premultas -->
+        <div id="premultas" class="section">
+            <h2>Bienvenido a la sección de PreMultas de la Policía Local</h2>
+            <p>Aquí podrás encontrar buscando palabras clave como "persecución, etc." las multas correspondientes para la situación.</p>
+            <p>Cualquier cosa a añadir a mi md: ggerry.</p>
+            <div class="search-container">
+                <input id="search-input-premultas" type="text" placeholder="Buscar premultas..." oninput="searchItems()">
+            </div>
+            
+            <div id="results-premultas" class="results"></div>
+            <h2>Hecho por: GERRY</h2>
+        </div>
+
+    <!-- Script -->
+    <script>
+
+    // Función para mostrar la sección seleccionada
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('.section'); // Obtén todas las secciones
+        sections.forEach(section => {
+            section.style.display = 'none'; // Oculta todas las secciones
+        });
+
+        const selectedSection = document.getElementById(sectionId);
+        if (selectedSection) {
+            selectedSection.style.display = 'block'; // Muestra solo la sección seleccionada
+        }
+
+        // Opcional: desplazarse al inicio de la página
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Mostrar por defecto la sección "multas"
+    document.addEventListener('DOMContentLoaded', () => {
+        showSection('multas'); // Mostrar "multas" al cargar la página
     });
-        const multas = [
+
+
+
+;
+    // Multas
+
+// Datos de ejemplo (multas)
+const multas = [
 { articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
 { articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },
 { articulo: "Art. 1.3", descripcion: "Cambio de carril en línea continua", multa: "275 €" },
@@ -213,51 +439,51 @@ document.addEventListener("DOMContentLoaded", () => {
 { articulo: "Art. 1.53", descripcion: "Transportar material inflamable o explosivo sin permiso", multa: "575 € + Retirada del material." },
 { articulo: "Art. 1.54", descripcion: "Conducir un vehículo sin tener el seguro activo", multa: "375 € + Retirada de la licencia + Vehículo Incautado." },
 { articulo: "Art. 1.55", descripcion: "Conducir un vehículo quad, buggie o atv en zonas no autorizadas (autopista)", multa: "150 €" },
-{ articulo: "Art. 2.1", "descripcion": "Robo a un civil", "multa": "150 €" },
-{ articulo: "Art. 2.2", "descripcion": "Robo a un civil con arma blanca", "multa": "250 €" },
-{ articulo: "Art. 2.3", "descripcion": "Robo a un civil con arma de fuego corta", "multa": "400 €" },
-{ articulo: "Art. 2.4", "descripcion": "Robo a un civil con arma de fuego larga", "multa": "700 €" },
-{ articulo: "Art. 2.5", "descripcion": "Robo a un civil con arma de fuego 'casera/especial'", "multa": "750 €" },
-{ articulo: "Art. 2.6", "descripcion": "Robo a un funcionario del estado", "multa": "700 €" },
-{ articulo: "Art. 2.7", "descripcion": "Robo a un funcionario del estado con arma blanca", "multa": "750 €" },
-{ articulo: "Art. 2.8", "descripcion": "Robo a un funcionario del estado con arma de fuego corta", "multa": "875 €" },
-{ articulo: "Art. 2.9", "descripcion": "Robo a un funcionario del estado con arma de fuego larga", "multa": "1000 €" },
-{ articulo: "Art. 2.10", "descripcion": "Robo a un funcionario del estado con arma de fuego 'casera/especial'", "multa": "1250 €" },
-{ articulo: "Art. 2.11", "descripcion": "Asalto a un civil con un arma falsa", "multa": "225 €" },
-{ articulo: "Art. 2.12", "descripcion": "Intimidación a un civil con un arma falsa", "multa": "300 €" },
-{ articulo: "Art. 2.13", "descripcion": "Asalto a un funcionario del estado con un arma falsa", "multa": "500 €" },
-{ articulo: "Art. 2.14", "descripcion": "Intimidación a un funcionario del estado con un arma falsa", "multa": "600 €" },
-{ articulo: "Art. 2.15", "descripcion": "Asalto a una propiedad publica", "multa": "1500 €" },
-{ articulo: "Art. 2.16", "descripcion": "Asalto a una propiedad publica a mano armada", "multa": "2250 €" },
-{ articulo: "Art. 2.17", "descripcion": "Asalto a una propiedad privada", "multa": "1800 €" },
-{ articulo: "Art. 2.18", "descripcion": "Asalto a una propiedad privada a mano armada", "multa": "2500 €" },
-{ articulo: "Art. 2.19", "descripcion": "Robo a una tienda de herramientas", "multa": "4500 €" },
-{ articulo: "Art. 2.20", "descripcion": "Robo a una gasolinera", "multa": "2250 €" },
-{ articulo: "Art. 2.21", "descripcion": "Robo a una empresa", "multa": "1900 €" },
-{ articulo: "Art. 2.22", "descripcion": "Robo a un ATM", "multa": "1250 €" },
-{ articulo: "Art. 2.23", "descripcion": "Robo a un taller de coches", "multa": "1600 €" },
-{ articulo: "Art. 2.24", "descripcion": "Robo a un restaurante de comida rápida", "multa": "1900 €" },
-{ articulo: "Art. 2.25", "descripcion": "Robo a un furgón bancario", "multa": "10000 €" },
-{ articulo: "Art. 2.26", "descripcion": "Robo a una joyería", "multa": "9500 €" },
-{ articulo: "Art. 2.27", "descripcion": "Robo a una sucursal bancaria", "multa": "27000 €" },
-{ articulo: "Art. 2.28", "descripcion": "Robo a un furgón de comida", "multa": "1000 €" },
-{ articulo: "Art. 2.29", "descripcion": "Apropiarse de pertenencias ajenas legales encontradas en la vía publica", "multa": "700 €" },
-{ articulo: "Art. 2.30", "descripcion": "Apropiarse de pertenencias ajenas ilegales encontradas en la vía publica", "multa": "1450 €" },
-{ articulo: "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" },
-{ articulo: "Art. 2.32", "descripcion": "Robo de un vehículo médico", "multa": "20500 €" },
-{ articulo: "Art. 2.33", "descripcion": "Robo de un vehículo de bomberos", "multa": "25750 €" },
-{ articulo: "Art. 2.34", "descripcion": "Robo de un vehículo policial", "multa": "30500 €" },
-{ articulo: "Art. 2.35", "descripcion": "Robo de un vehículo presidencial", "multa": "50000 €" },
-{ articulo: "Art. 2.36", "descripcion": "Robo de un vehículo de transporte público", "multa": "7500 €" },
-{ articulo: "Art. 2.37", "descripcion": "Robo de un vehículo de transporte privado", "multa": "8500 €" },
-{ articulo: "Art. 2.38", "descripcion": "Allanamiento de morada", "multa": "1850 €" },
-{ articulo: "Art. 2.39", "descripcion": "Robo de material radiactivo", "multa": "100000 € + Solicitar Juicio" },
-{ articulo: "Art. 2.40", "descripcion": "Robo en edificio estatal", "multa": "32500 €" },
-{ articulo: "Art. 2.41", "descripcion": "Robo de información confidencial", "multa": "11500 €" },
-{ articulo: "Art. 2.42", "descripcion": "Robo de evidencias", "multa": "5000 €" },
-{ articulo: "Art. 2.43", "descripcion": "Robo de utensilios policiales", "multa": "1150 €" },
-{ articulo: "Art. 2.44", "descripcion": "Robo de material médico", "multa": "750 €" },
-{ articulo: "Art. 2.44", "descripcion": "Robo de material público", "multa": "850 €" },
+{ articulo: "Art. 2.1", descripcion: "Robo a un civil", "multa": "150 €" },
+{ articulo: "Art. 2.2", descripcion: "Robo a un civil con arma blanca", "multa": "250 €" },
+{ articulo: "Art. 2.3", descripcion: "Robo a un civil con arma de fuego corta", "multa": "400 €" },
+{ articulo: "Art. 2.4", descripcion: "Robo a un civil con arma de fuego larga", "multa": "700 €" },
+{ articulo: "Art. 2.5", descripcion: "Robo a un civil con arma de fuego 'casera/especial'", "multa": "750 €" },
+{ articulo: "Art. 2.6", descripcion: "Robo a un funcionario del estado", "multa": "700 €" },
+{ articulo: "Art. 2.7", descripcion: "Robo a un funcionario del estado con arma blanca", "multa": "750 €" },
+{ articulo: "Art. 2.8", descripcion: "Robo a un funcionario del estado con arma de fuego corta", "multa": "875 €" },
+{ articulo: "Art. 2.9", descripcion: "Robo a un funcionario del estado con arma de fuego larga", "multa": "1000 €" },
+{ articulo: "Art. 2.10", descripcion: "Robo a un funcionario del estado con arma de fuego 'casera/especial'", "multa": "1250 €" },
+{ articulo: "Art. 2.11", descripcion: "Asalto a un civil con un arma falsa", "multa": "225 €" },
+{ articulo: "Art. 2.12", descripcion: "Intimidación a un civil con un arma falsa", "multa": "300 €" },
+{ articulo: "Art. 2.13", descripcion: "Asalto a un funcionario del estado con un arma falsa", "multa": "500 €" },
+{ articulo: "Art. 2.14", descripcion: "Intimidación a un funcionario del estado con un arma falsa", "multa": "600 €" },
+{ articulo: "Art. 2.15", descripcion: "Asalto a una propiedad publica", "multa": "1500 €" },
+{ articulo: "Art. 2.16", descripcion: "Asalto a una propiedad publica a mano armada", "multa": "2250 €" },
+{ articulo: "Art. 2.17", descripcion: "Asalto a una propiedad privada", "multa": "1800 €" },
+{ articulo: "Art. 2.18", descripcion: "Asalto a una propiedad privada a mano armada", "multa": "2500 €" },
+{ articulo: "Art. 2.19", descripcion: "Robo a una tienda de herramientas", "multa": "4500 €" },
+{ articulo: "Art. 2.20", descripcion: "Robo a una gasolinera", "multa": "2250 €" },
+{ articulo: "Art. 2.21", descripcion: "Robo a una empresa", "multa": "1900 €" },
+{ articulo: "Art. 2.22", descripcion: "Robo a un ATM", "multa": "1250 €" },
+{ articulo: "Art. 2.23", descripcion: "Robo a un taller de coches", "multa": "1600 €" },
+{ articulo: "Art. 2.24", descripcion: "Robo a un restaurante de comida rápida", "multa": "1900 €" },
+{ articulo: "Art. 2.25", descripcion: "Robo a un furgón bancario", "multa": "10000 €" },
+{ articulo: "Art. 2.26", descripcion: "Robo a una joyería", "multa": "9500 €" },
+{ articulo: "Art. 2.27", descripcion: "Robo a una sucursal bancaria", "multa": "27000 €" },
+{ articulo: "Art. 2.28", descripcion: "Robo a un furgón de comida", "multa": "1000 €" },
+{ articulo: "Art. 2.29", descripcion: "Apropiarse de pertenencias ajenas legales encontradas en la vía publica", "multa": "700 €" },
+{ articulo: "Art. 2.30", descripcion: "Apropiarse de pertenencias ajenas ilegales encontradas en la vía publica", "multa": "1450 €" },
+{ articulo: "Art. 2.31", descripcion: "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" },
+{ articulo: "Art. 2.32", descripcion: "Robo de un vehículo médico", "multa": "20500 €" },
+{ articulo: "Art. 2.33", descripcion: "Robo de un vehículo de bomberos", "multa": "25750 €" },
+{ articulo: "Art. 2.34", descripcion: "Robo de un vehículo policial", "multa": "30500 €" },
+{ articulo: "Art. 2.35", descripcion: "Robo de un vehículo presidencial", "multa": "50000 €" },
+{ articulo: "Art. 2.36", descripcion: "Robo de un vehículo de transporte público", "multa": "7500 €" },
+{ articulo: "Art. 2.37", descripcion: "Robo de un vehículo de transporte privado", "multa": "8500 €" },
+{ articulo: "Art. 2.38", descripcion: "Allanamiento de morada", "multa": "1850 €" },
+{ articulo: "Art. 2.39", descripcion: "Robo de material radiactivo", "multa": "100000 € + Solicitar Juicio" },
+{ articulo: "Art. 2.40", descripcion: "Robo en edificio estatal", "multa": "32500 €" },
+{ articulo: "Art. 2.41", descripcion: "Robo de información confidencial", "multa": "11500 €" },
+{ articulo: "Art. 2.42", descripcion: "Robo de evidencias", "multa": "5000 €" },
+{ articulo: "Art. 2.43", descripcion: "Robo de utensilios policiales", "multa": "1150 €" },
+{ articulo: "Art. 2.44", descripcion: "Robo de material médico", "multa": "750 €" },
+{ articulo: "Art. 2.44", descripcion: "Robo de material público", "multa": "850 €" },
 { articulo: "Art. 3.1", descripcion: "Intento de agresión", multa: "100 €" },
 { articulo: "Art. 3.2", descripcion: "Agresión a un civil", multa: "250 €" },
 { articulo: "Art. 3.3", descripcion: "Agresión a un bombero", multa: "350 €" },
@@ -478,90 +704,133 @@ document.addEventListener("DOMContentLoaded", () => {
 { articulo: "Art. 7.33", descripcion: "Hacer un uso indebido de las sirenas de emergencia", multa: "1750 €" },
 { articulo: "Art. 7.34", descripcion: "Hacer uso incorrecto del vehículo de emergencias", multa: "500-12500 € (Dependiendo del mal uso que se le da al vehículo)" },
 { articulo: "Art. 7.35", descripcion: "Hacer mal uso de dispositivos o aeronaves de vigilancia", multa: "950 €" }
-        ];
+];
 
-        const resultsContainer = document.getElementById("results");
-        const clipboardContent1 = document.getElementById("clipboard-content1");
-        const clipboardContent2 = document.getElementById("clipboard-content2");
-        const copyButton1 = document.getElementById("copy-button1");
-        const copyButton2 = document.getElementById("copy-button2");
-        let clipboard1 = new Set();
-        let clipboard2 = new Set();
+// Elementos del DOM
+const resultsContainer = document.getElementById("results");
+const clipboardContent1 = document.getElementById("clipboard-content1");
+const clipboardContent2 = document.getElementById("clipboard-content2");
+const copyButton1 = document.getElementById("copy-button1");
+const copyButton2 = document.getElementById("copy-button2");
+const totalAmountElement = document.getElementById("total-amount");
+const totalCountElement = document.getElementById("total-count");
 
-        function renderMultas(query = "") {
-            resultsContainer.innerHTML = "";
-            const filteredMultas = multas.filter(
-                multa => multa.articulo.toLowerCase().includes(query) ||
-                         multa.descripcion.toLowerCase().includes(query)
-            );
+let clipboard1 = new Set();
+let clipboard2 = new Set();
+let selectedItems = new Set();  // Guardar los elementos seleccionados
 
-            if (filteredMultas.length === 0) {
-                resultsContainer.textContent = "No se encontraron resultados.";
-                return;
-            }
+// Función para renderizar las multas
+function renderMultas(query = "") {
+    resultsContainer.innerHTML = ""; // Limpiar resultados previos
 
-            filteredMultas.forEach(multa => {
-                const div = document.createElement("div");
-                div.className = "result-item";
-                const isRange = multa.multa.includes("-");
+    const filteredMultas = multas.filter(
+        multa => multa.articulo.toLowerCase().includes(query) ||
+                 multa.descripcion.toLowerCase().includes(query)
+    );
 
-                if (isRange) {
-                    const [min, max] = multa.multa.replace("€", "").split("-").map(num => parseInt(num.trim(), 10));
-                    div.innerHTML = `
-                        ${multa.articulo} - ${multa.descripcion}: ${min}-${max} €
-                        <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
-                        <button>Agregar</button>
-                    `;
-                    const input = div.querySelector("input");
-                    const button = div.querySelector("button");
-                    button.addEventListener("click", () => {
-                        const value = parseInt(input.value, 10);
-                        const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
-                        if (isNaN(value) || value < min || value > max) {
-                            alert(`Por favor, selecciona un valor válido entre ${min} y ${max} €.`);
-                        } else if (clipboard1.has(key) || clipboard2.has(key)) {
-                            alert("Este artículo ya está en el portapapeles.");
-                        } else {
-                            clipboard1.add(key);
-                            clipboard2.add(key);
-                            div.classList.add("selected");
-                            updateClipboard();
-                        }
-                    });
+    if (filteredMultas.length === 0) {
+        resultsContainer.textContent = "No se encontraron resultados.";
+        return;
+    }
+
+    filteredMultas.forEach(multa => {
+        const div = document.createElement("div");
+        div.className = "result-item";
+        const isRange = multa.multa.includes("-");
+
+        // Aplicar color verde a los artículos previamente seleccionados
+        if (selectedItems.has(`${multa.articulo} - ${multa.descripcion}: ${multa.multa}`)) {
+            div.classList.add("selected");
+        }
+
+        if (isRange) {
+            const [min, max] = multa.multa.replace("€", "").split("-").map(num => parseInt(num.trim(), 10));
+            div.innerHTML = `
+                ${multa.articulo} - ${multa.descripcion}: ${min}-${max} €
+                <input type="number" min="${min}" max="${max}" placeholder="${min}-${max}" />
+                <button class="blue-button">Agregar</button> <!-- Botón Agregar -->
+                <button class="red-button">Eliminar</button> <!-- Botón Rojo -->
+            `;
+            const input = div.querySelector("input");
+            const addButton = div.querySelector(".blue-button");
+            const deleteButton = div.querySelector(".red-button");
+
+            // Lógica para el botón azul (Agregar)
+            addButton.addEventListener("click", () => {
+                const value = parseInt(input.value, 10);
+                const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
+                if (isNaN(value) || value < min || value > max) {
+                    alert(`Por favor, selecciona un valor válido entre ${min} y ${max} €.`);
+                } else if (clipboard1.has(key) || clipboard2.has(key)) {
+                    alert("Este artículo ya está en el portapapeles.");
                 } else {
-                    div.textContent = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-                    div.addEventListener("click", () => toggleClipboard(div, multa));
+                    clipboard1.add(key);
+                    clipboard2.add(key);
+                    div.classList.add("selected");
+                    selectedItems.add(key); // Guardar la selección
+                    updateClipboard();
                 }
+            });
 
-                resultsContainer.appendChild(div);
+            // Lógica para el botón rojo (Eliminar)
+            deleteButton.addEventListener("click", () => {
+                const value = parseInt(input.value, 10);
+                const key = `${multa.articulo} - ${multa.descripcion}: ${value} €`;
+                if (selectedItems.has(key)) {
+                    clipboard1.delete(key);
+                    clipboard2.delete(key);
+                    selectedItems.delete(key);
+                    div.classList.remove("selected");
+                    updateClipboard();
+                } else {
+                    alert("Este artículo no está en el portapapeles.");
+                }
+            });
+        } else {
+            // Multas que no son de rango (no se incluyen botones)
+            div.innerHTML = `
+                ${multa.articulo} - ${multa.descripcion}: ${multa.multa}
+            `;
+
+            // Añadir evento de clic para agregar/quitar al portapapeles
+            div.addEventListener("click", () => {
+                toggleClipboard(div, multa);
             });
         }
-const searchInput = document.getElementById("search-input");
 
-// Escuchar los eventos de entrada en el buscador
-searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase(); // Convertir a minúsculas para buscar de forma insensible a mayúsculas
-    renderMultas(query); // Llamar a renderMultas con la búsqueda filtrada
-});
+        resultsContainer.appendChild(div); // Agregar al contenedor
+    });
+}
 
-        function toggleClipboard(element, multa) {
-            const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
-            if (clipboard1.has(key) || clipboard2.has(key)) {
-                clipboard1.delete(key);
-                clipboard2.delete(key);
-                element.classList.remove("selected");
-            } else {
-                clipboard1.add(key);
-                clipboard2.add(key);
-                element.classList.add("selected");
-            }
-            updateClipboard();
-        }
 
-        function updateClipboard() {
-    clipboardContent1.innerHTML = "/multas poner usuario: razon:";
-    clipboardContent2.innerHTML = "/arrestar usuario: razon:";
+
+// Función de selección de las multas
+function toggleClipboard(element, multa) {
+    const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
     
+    if (clipboard1.has(key) || clipboard2.has(key)) {
+        // Si ya está en el portapapeles, eliminarlo
+        clipboard1.delete(key);
+        clipboard2.delete(key);
+        element.classList.remove("selected");
+        selectedItems.delete(key); // Eliminar del conjunto de selección
+    } else {
+        // Si no está en el portapapeles, agregarlo
+        clipboard1.add(key);
+        clipboard2.add(key);
+        element.classList.add("selected");
+        selectedItems.add(key); // Añadir a la selección
+    }
+
+    updateClipboard(); // Actualiza la interfaz del portapapeles
+}
+
+
+// Actualizar contenido del portapapeles
+function updateClipboard() {
+    clipboardContent1.innerHTML = "/multas poner usuario: razon:"; // Texto fijo para el primer portapapeles
+    clipboardContent2.innerHTML = "/arrestar usuario: razon:"; // Texto fijo para el segundo portapapeles
+
     const updateClipboardContent = (clipboard, content) => {
         if (clipboard.size === 0) {
             content.textContent = "No hay multas seleccionadas.";
@@ -578,7 +847,7 @@ searchInput.addEventListener("input", () => {
             deleteButton.addEventListener("click", () => {
                 clipboard1.delete(item);
                 clipboard2.delete(item);
-                removeHighlight(item); // Elimina el color verde
+                removeHighlight(item); // Elimina el color verde del item
                 updateClipboard(); // Actualiza el portapapeles
             });
 
@@ -586,18 +855,14 @@ searchInput.addEventListener("input", () => {
             content.appendChild(div);
         });
     };
+
     updateClipboardContent(clipboard1, clipboardContent1);
     updateClipboardContent(clipboard2, clipboardContent2);
-
-    // Calcular y mostrar totales
-    calculateTotals();
+    calculateTotals(); // Actualiza los totales
 }
 
+// Calcular totales
 function calculateTotals() {
-    const totalsElement = document.getElementById("totals");
-    const totalAmountElement = document.getElementById("total-amount");
-    const totalCountElement = document.getElementById("total-count");
-
     let totalAmount = 0;
     let itemCount = clipboard1.size;
 
@@ -612,16 +877,17 @@ function calculateTotals() {
     totalCountElement.textContent = `Artículos seleccionados: ${itemCount}`;
 }
 
-
-        function removeHighlight(item) {
-            const items = document.querySelectorAll(".result-item");
-            items.forEach(element => {
-                if (element.textContent.includes(item)) {
-                    element.classList.remove("selected");
-                }
-            });
+// Eliminar resaltar elementos
+function removeHighlight(item) {
+    const items = document.querySelectorAll(".result-item");
+    items.forEach(element => {
+        if (element.textContent.includes(item)) {
+            element.classList.remove("selected"); // Eliminar la clase 'selected' del elemento
         }
+    });
+}
 
+// Copiar al portapapeles
 copyButton1.addEventListener("click", () => {
     const headerText = "/multas poner usuario: razon:"; // Texto fijo o dinámico según necesites
     const text = Array.from(clipboard1).join("\n");
@@ -642,9 +908,191 @@ copyButton2.addEventListener("click", () => {
     });
 });
 
+// Función de búsqueda en tiempo real
+const searchInput = document.getElementById("search-input");
+searchInput.addEventListener("input", function() {
+    const query = searchInput.value.toLowerCase();
+    renderMultas(query);
+});
 
-        renderMultas();
+// Iniciar renderizado
+renderMultas();
+
+
+
+// Premultas
+// Datos de las pmultas
+const pmultas = [
+
+  {
+    "titulo": "Iniciar una persecución",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." }
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Conducir sin seguro",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { "articulo": "Art. 1.54", "descripcion": "Conducir un vehículo sin tener el seguro activo", "multa": "375 € + Retirada de la licencia + Vehículo Incautado." }
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Circular sin permiso",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { "articulo": "Art. 1.25", "descripcion": "Circular sin permiso de conducir", "multa": "750 € + Vehículo Incautado." }
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Robo de un vehículo",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Conducir sin seguro + Circular sin permiso",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { "articulo": "Art. 1.54", "descripcion": "Conducir un vehículo sin tener el seguro activo", "multa": "375 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.25", "descripcion": "Circular sin permiso de conducir", "multa": "750 € + Vehículo Incautado." }
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Conducir sin seguro + Robo de un vehículo",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { "articulo": "Art. 1.54", "descripcion": "Conducir un vehículo sin tener el seguro activo", "multa": "375 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Circular sin licencia + Robo de un vehículo",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { "articulo": "Art. 1.25", "descripcion": "Circular sin permiso de conducir", "multa": "750 € + Vehículo Incautado." },
+      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Conducir sin seguro + Circular sin licencia + Robo de un vehículo",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { "articulo": "Art. 1.54", "descripcion": "Conducir un vehículo sin tener el seguro activo", "multa": "375 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.25", "descripcion": "Circular sin permiso de conducir", "multa": "750 € + Vehículo Incautado." },
+      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
+    ]
+  },
+  
+
+
+        ];
+
+        // Función para renderizar los artículos
+        function renderItems(query = "") {
+    const resultsContainer = document.getElementById("results-premultas");
+    resultsContainer.innerHTML = ""; // Limpiar los resultados previos
+
+    let found = false;
+
+    pmultas.forEach(entrada => {
+        if (entrada.titulo.toLowerCase().includes(query.toLowerCase())) {
+            found = true;
+            const cardDiv = document.createElement("div");
+            cardDiv.className = "card";
+            cardDiv.innerHTML = `
+                <h2>${entrada.titulo}</h2>
+                <p>Artículos relacionados:</p>
+            `;
+
+            // Inicializamos el total de la multa en 0
+            let totalMulta = 0;
+
+            // Renderizar artículos y sumar los importes de las multas
+            entrada.articulos.forEach(multa => {
+                // Convertimos el importe de la multa (que es una cadena con símbolo de euro) a un número
+                const cantidadMulta = parseFloat(multa.multa.replace(' €', '').replace(',', '.'));
+                totalMulta += cantidadMulta; // Sumar al total
+
+                cardDiv.innerHTML += `
+                    <p><strong>${multa.articulo}</strong>: ${multa.descripcion} - ${multa.multa}</p>
+                `;
+            });
+
+            // Mostrar total del importe de las multas sin decimales
+            cardDiv.innerHTML += `
+                <p><strong>Total de multas: ${Math.round(totalMulta)} €</strong></p>
+            `;
+
+            // Botones de copiar
+            cardDiv.innerHTML += `
+                <div class="copy-buttons-container">
+                    <button onclick="copyForMultas('${entrada.titulo}')">Copiar para Multas</button>
+                    <button onclick="copyForArrestos('${entrada.titulo}')">Copiar para Arrestos</button>
+                </div>
+            `;
+
+            resultsContainer.appendChild(cardDiv);
+        }
     });
-</script>
+
+    if (!found) {
+        resultsContainer.innerHTML = "<p>No se encontraron resultados.</p>";
+    }
+}
+
+// Función de búsqueda
+function searchItems() {
+    const query = document.getElementById("search-input-premultas").value;
+    renderItems(query);
+}
+
+// Función para copiar los artículos para multas
+function copyForMultas(titulo) {
+    const entrada = pmultas.find(e => e.titulo === titulo);
+    let textToCopy = `/multas poner usuario: razon:\n`;
+
+    entrada.articulos.forEach(multa => {
+        textToCopy += `${multa.articulo} - ${multa.descripcion} - ${multa.multa}\n`;
+    });
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        alert("Contenido copiado al portapapeles (Multas).");
+    }).catch(err => {
+        alert("Error al copiar al portapapeles: " + err);
+    });
+}
+
+// Función para copiar los artículos para arrestos
+function copyForArrestos(titulo) {
+    const entrada = pmultas.find(e => e.titulo === titulo);
+    let textToCopy = `/arrestar usuario: razon:\n`;
+
+    entrada.articulos.forEach(multa => {
+        textToCopy += `${multa.articulo} - ${multa.descripcion} - ${multa.multa}\n`;
+    });
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        alert("Contenido copiado al portapapeles (Arrestos).");
+    }).catch(err => {
+        alert("Error al copiar al portapapeles: " + err);
+    });
+}
+
+        // Inicializar con todas las pmultas
+        renderItems();
+
+
+
+    </script>
 </body>
 </html>

@@ -16,11 +16,18 @@ body {
 
 /* Estilos para el encabezado */
 .header {
+    display: flex;
+    justify-content: space-between; /* Distribuye el espacio entre el título y las imágenes */
+    align-items: center; /* Alinea verticalmente el contenido */
     background-color: #0044cc;
     color: white;
-    padding: 55px;
-    text-align: center;
+    padding: 20px 30px;
     position: relative;
+    text-align: center;
+}
+.header h1 {
+    flex-grow: 1; /* Asegura que el título ocupe todo el espacio disponible */
+    text-align: center; /* Centra el texto en pantallas grandes */
 }
 /* General (para todos los tamaños de pantalla) */
 body {
@@ -35,21 +42,38 @@ body {
   margin: 0 auto;
 }
 
-/* Media Queries para ajustar en pantallas más pequeñas */
 @media (max-width: 768px) {
-  .container {
-    width: 100%;
-    padding: 10px;
-  }
+    .header {
+        padding: 15px;
+    }
+    
+    .header img {
+        width: 100px; /* Reducir el tamaño de la imagen en pantallas medianas */
+    }
+    
+    .header h1 {
+        font-size: 1.5rem; /* Ajustar tamaño de fuente en pantallas medianas */
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px;
+    }
+
+    .header img {
+        width: 80px; /* Reducir aún más el tamaño de la imagen en pantallas pequeñas */
+    }
+
+    .header h1 {
+        font-size: 1.2rem; /* Ajustar tamaño de fuente en pantallas pequeñas */
+    }
 }
 
 
 .header img {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 180px;
-    height: 150px;
+    width: auto; /* Ajusta el tamaño de la imagen */
+    height: 100px; /* Mantiene la relación de aspecto */
     background: white;
     border-radius: 10px;
     padding: 10px;
@@ -60,9 +84,6 @@ body {
         }
 .header .left {
             left: 10px;
-            width: 160px; /* Más grande */
-            height: 150px;
-            padding: 10px;
         }
 
 

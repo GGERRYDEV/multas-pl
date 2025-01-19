@@ -18,7 +18,7 @@ body {
 .header {
     background-color: #0044cc;
     color: white;
-    padding: 30px;
+    padding: 55px;
     text-align: center;
     position: relative;
 }
@@ -27,13 +27,22 @@ body {
     position: absolute;
     top: 10px;
     right: 10px;
-    width: 120px;
-    height: 95px;
+    width: 180px;
+    height: 150px;
     background: white;
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+.header .right {
+            right: 10px;
+        }
+.header .left {
+            left: 10px;
+            width: 160px; /* Más grande */
+            height: 150px;
+        }
+
 
 /* Estilo para los botones de navegación */
 .nav-buttons {
@@ -51,6 +60,7 @@ body {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    justify-content: center;
 }
 
 .nav-buttons button:hover {
@@ -287,6 +297,21 @@ body {
 .red-button:hover {
     background-color: darkred;
 }
+.full-line-button {
+    flex: 1; /* Asegura que los botones ocupen el mismo espacio */
+    margin: 0 2px; /* Añade un pequeño margen horizontal */
+    padding: 10px; /* Tamaño del botón */
+    background-color: #007BFF; /* Color de fondo */
+    color: white; /* Color del texto */
+    border: none; /* Sin bordes */
+    border-radius: 5px; /* Bordes redondeados */
+    text-align: center; /* Centrar texto */
+    cursor: pointer;
+}
+
+.full-line-button:hover {
+    background-color: #0056b3; /* Cambia de color al pasar el ratón */
+}
 
 
 
@@ -296,15 +321,16 @@ body {
 
     <!-- Sección Encabezado -->
     <div class="header">
+        <img class="left" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Emblema_de_la_Policía_de_Andalucía.svg/512px-Emblema_de_la_Policía_de_Andalucía.svg.png" alt="Emblema_de_la_Policía_de_Andalucía">
         <h1>Calculadora de Multas de la Policía Local</h1>
-        <img src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
+        <img class="right" src="https://www.openpol.es/wp-content/uploads/2018/04/policia-local-escudo.png" alt="Logo Policía">
     </div>
 
     <!-- Sección Botones de Navegación -->
      
     <div class="nav-buttons">
-        <button onclick="showSection('multas')">Buscar Multas</button>
-        <button onclick="showSection('premultas')">PreMultas</button>
+        <button class="full-line-button"onclick="showSection('multas')">Buscar Multas</button>
+        <button class="full-line-button"onclick="showSection('premultas')">PreMultas</button>
     </div>
         <!-- Sección multas -->
         <div id="multas" class="section">
@@ -400,7 +426,6 @@ const multas = [
 { articulo: "Art. 1.13", descripcion: "Evadir un control policial", multa: "450 €" },
 { articulo: "Art. 1.14", descripcion: "Darse a la fuga de un control policial", multa: "1150 € + Retirada de la licencia." },
 { articulo: "Art. 1.15", descripcion: "Exceso de velocidad en vías interurbanas", multa: "350 €" },
-{ articulo: "Art. 1.16", descripcion: "Exceso de velocidad en vías secundarias", multa: "250 €" },
 { articulo: "Art. 1.17", descripcion: "Conducir con el vehículo en malas condiciones", multa: "275 € + vehículo incautado." },
 { articulo: "Art. 1.18", descripcion: "Conducir por la noche sin las luces", multa: "300 €" },
 { articulo: "Art. 1.19", descripcion: "Conducir por el día con las luces", multa: "100 €" },

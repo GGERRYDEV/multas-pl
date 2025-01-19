@@ -22,6 +22,27 @@ body {
     text-align: center;
     position: relative;
 }
+/* General (para todos los tamaños de pantalla) */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* Media Queries para ajustar en pantallas más pequeñas */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    padding: 10px;
+  }
+}
+
 
 .header img {
     position: absolute;
@@ -41,6 +62,7 @@ body {
             left: 10px;
             width: 160px; /* Más grande */
             height: 150px;
+            padding: 10px;
         }
 
 
@@ -317,6 +339,8 @@ body {
 
     </style>
 </head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <body>
 
     <!-- Sección Encabezado -->

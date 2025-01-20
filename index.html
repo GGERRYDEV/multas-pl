@@ -390,27 +390,6 @@ body {
             
             <!-- Resultados de la búsqueda -->
             <div id="results" class="results"></div>
-            <!-- Portapapeles para mostrar las multas seleccionadas -->
-            <div id="clipboard1" class="clipboard">
-                <h2>Portapapeles Multas</h2>
-                <div id="clipboard-content1"></div>
-                <button id="copy-button1" class="copy-button">Copiar al portapapeles</button>
-            </div>
-    
-            <!-- Portapapeles para mostrar arrestos -->
-            <div id="clipboard2" class="clipboard">
-                <h2>Portapapeles Arrestos</h2>
-                <div id="clipboard-content2"></div>
-                <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
-            </div>
-    
-            <!-- Total de Multas -->
-            <div id="totals" class="clipboard">
-                <h2>Total de Multas</h2>
-                <p id="total-amount">Total: 0 €</p>
-                <p id="total-count">Artículos seleccionados: 0</p>
-            </div>
-            <h2>Hecho por: GERRY</h2>
         </div>
         <!-- Sección Premultas -->
         <div id="premultas" class="section">
@@ -419,11 +398,32 @@ body {
             <p>Cualquier cosa a añadir a mi md: ggerry.</p>
             <div class="search-container">
                 <input id="search-input-premultas" type="text" placeholder="Buscar premultas..." oninput="searchItems()">
+                <button class="goto-clipboard" onclick="document.getElementById('clipboard1').scrollIntoView()">Ir al Portapapeles</button>
             </div>
             
             <div id="results-premultas" class="results"></div>
-            <h2>Hecho por: GERRY</h2>
         </div>
+                    <!-- Portapapeles para mostrar las multas seleccionadas -->
+                    <div id="clipboard1" class="clipboard">
+                        <h2>Portapapeles Multas</h2>
+                        <div id="clipboard-content1"></div>
+                        <button id="copy-button1" class="copy-button">Copiar al portapapeles</button>
+                    </div>
+            
+                    <!-- Portapapeles para mostrar arrestos -->
+                    <div id="clipboard2" class="clipboard">
+                        <h2>Portapapeles Arrestos</h2>
+                        <div id="clipboard-content2"></div>
+                        <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
+                    </div>
+            
+                    <!-- Total de Multas -->
+                    <div id="totals" class="clipboard">
+                        <h2>Total de Multas</h2>
+                        <p id="total-amount">Total: 0 €</p>
+                        <p id="total-count">Artículos seleccionados: 0</p>
+                    </div>
+                    <h2>Hecho por: GERRY</h2>
 
     <!-- Script -->
     <script>
@@ -471,7 +471,7 @@ const multas = [
 { articulo: "Art. 1.13", descripcion: "Evadir un control policial", multa: "450 €" },
 { articulo: "Art. 1.14", descripcion: "Darse a la fuga de un control policial", multa: "1150 € + Retirada de la licencia." },
 { articulo: "Art. 1.15", descripcion: "Exceso de velocidad en vías interurbanas", multa: "350 €" },
-{ articulo: "Art. 1.16", descripcion: "Exceso de velocidad en vías secundarias", multa: "250 €" },   
+{ articulo: "Art. 1.16", descripcion: "Exceso de velocidad en vías secundarias", multa: "250 €" },
 { articulo: "Art. 1.17", descripcion: "Conducir con el vehículo en malas condiciones", multa: "275 € + vehículo incautado." },
 { articulo: "Art. 1.18", descripcion: "Conducir por la noche sin las luces", multa: "300 €" },
 { articulo: "Art. 1.19", descripcion: "Conducir por el día con las luces", multa: "100 €" },
@@ -996,6 +996,7 @@ renderMultas();
 // Datos de las pmultas
 const pmultas = [
 
+
   {
     "titulo": "Iniciar una persecución",
     "articulos": [
@@ -1020,14 +1021,6 @@ const pmultas = [
     ]
   },
   {
-    "titulo": "Iniciar una persecución + Robo de un vehículo",
-    "articulos": [
-      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
-      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
-      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
-    ]
-  },
-  {
     "titulo": "Iniciar una persecución + Conducir sin seguro + Circular sin permiso",
     "articulos": [
       { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
@@ -1037,37 +1030,198 @@ const pmultas = [
     ]
   },
   {
-    "titulo": "Iniciar una persecución + Conducir sin seguro + Robo de un vehículo",
+    "titulo": "Iniciar una persecución + huir de la justicia",
+    "articulos": [
+      { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
+      { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
+      { articulo: "Art. 6.21", descripcion: "Huir de la justicia", multa: "1250 €" },
+    ]
+  },
+  {
+    "titulo": "Iniciar una persecución + Conducir sin seguro + huir de la justicia",
     "articulos": [
       { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
       { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
       { "articulo": "Art. 1.54", "descripcion": "Conducir un vehículo sin tener el seguro activo", "multa": "375 € + Retirada de la licencia + Vehículo Incautado." },
-      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
+      { articulo: "Art. 6.21", descripcion: "Huir de la justicia", multa: "1250 €" },
     ]
   },
   {
-    "titulo": "Iniciar una persecución + Circular sin licencia + Robo de un vehículo",
+    "titulo": "Iniciar una persecución + Circular sin permiso + huir de la justicia",
     "articulos": [
       { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
       { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
       { "articulo": "Art. 1.25", "descripcion": "Circular sin permiso de conducir", "multa": "750 € + Vehículo Incautado." },
-      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
+      { articulo: "Art. 6.21", descripcion: "Huir de la justicia", multa: "1250 €" },
     ]
   },
   {
-    "titulo": "Iniciar una persecución + Conducir sin seguro + Circular sin licencia + Robo de un vehículo",
+    "titulo": "Iniciar una persecución + Conducir sin seguro + Circular sin permiso + huir de la justicia",
     "articulos": [
       { "articulo": "Art. 1.36", "descripcion": "Iniciar una persecución", "multa": "2100 € + Retirada de la licencia + Vehículo Incautado." },
       { "articulo": "Art. 1.49", "descripcion": "Conducción temeraria", "multa": "625 € + Retirada de la licencia." },
       { "articulo": "Art. 1.54", "descripcion": "Conducir un vehículo sin tener el seguro activo", "multa": "375 € + Retirada de la licencia + Vehículo Incautado." },
       { "articulo": "Art. 1.25", "descripcion": "Circular sin permiso de conducir", "multa": "750 € + Vehículo Incautado." },
-      { "articulo": "Art. 2.31", "descripcion": "Robo de un vehículo civil", "multa": "7000 - 25000 € (Dependiendo del vehículo robado)" }
+      { articulo: "Art. 6.21", descripcion: "Huir de la justicia", multa: "1250 €" },
     ]
   },
-  
+  {
+    "titulo": "Iniciar un tiroteo con arma corta con licencia de armas",
+    "articulos": [
+    { articulo: "Art. 4.18", descripcion: "Iniciar un tiroteo con un arma corta con licencia", multa: "2450 €" },
+    { articulo: "Art. 4.12", descripcion: "Uso indebido de armas cortas con licencia", multa: "2200 € + Retirada de la licencia" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta sin licencia de armas",
+    "articulos": [
+    { articulo: "Art. 4.17", descripcion: "Iniciar un tiroteo con un arma corta sin licencia", multa: "2300 €" },
+    { articulo: "Art. 4.5", descripcion: "Uso indebido de armas cortas sin licencia", multa: "2000 €" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta ilegal",
+    "articulos": [
+    { articulo: "Art. 4.14", descripcion: "Iniciar un tiroteo con un arma corta ilegal", multa: "3250 €" },
+    { articulo: "Art. 4.6", descripcion: "Uso indebido de arma corta ilegal", multa: "2550 €" },
+    ]
+  },
 
+  {
+    "titulo": "Iniciar un tiroteo con arma corta con licencia de armas + abatir a un funcionario",
+    "articulos": [
+    { articulo: "Art. 4.18", descripcion: "Iniciar un tiroteo con un arma corta con licencia", multa: "2450 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 4.12", descripcion: "Uso indebido de armas cortas con licencia", multa: "2200 € + Retirada de la licencia" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta con licencia de armas + abatir a un funcionario + secuestro a un funcionario",
+    "articulos": [
+    { articulo: "Art. 4.18", descripcion: "Iniciar un tiroteo con un arma corta con licencia", multa: "2450 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 5.30", descripcion: "Secuestro a un funcionario", multa: "2000 €" },
+    { articulo: "Art. 4.12", descripcion: "Uso indebido de armas cortas con licencia", multa: "2200 € + Retirada de la licencia" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta sin licencia de armas + abatir a un funcionario",
+    "articulos": [
+    { articulo: "Art. 4.17", descripcion: "Iniciar un tiroteo con un arma corta sin licencia", multa: "2300 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 4.2", descripcion: "Posesión de arma corta sin licencia", multa: "1500 €" },
+    { articulo: "Art. 4.5", descripcion: "Uso indebido de armas cortas sin licencia", multa: "2000 €" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta sin licencia de armas + abatir a un funcionario + secuestro a un funcionario",
+    "articulos": [
+    { articulo: "Art. 4.17", descripcion: "Iniciar un tiroteo con un arma corta sin licencia", multa: "2300 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 5.30", descripcion: "Secuestro a un funcionario", multa: "2000 €" },
+    { articulo: "Art. 4.2", descripcion: "Posesión de arma corta sin licencia", multa: "1500 €" },
+    { articulo: "Art. 4.5", descripcion: "Uso indebido de armas cortas sin licencia", multa: "2000 €" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta ilegal + abatir a un funcionario",
+    "articulos": [
+    { articulo: "Art. 4.14", descripcion: "Iniciar un tiroteo con un arma corta ilegal", multa: "3250 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 4.1", descripcion: "Posesión de arma ilegal", multa: "1000 €" },
+    { articulo: "Art. 4.6", descripcion: "Uso indebido de arma corta ilegal", multa: "2550 €" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta ilegal + abatir a un funcionario + secuestro a un funcionario",
+    "articulos": [
+    { articulo: "Art. 4.17", descripcion: "Iniciar un tiroteo con un arma corta sin licencia", multa: "2300 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 5.30", descripcion: "Secuestro a un funcionario", multa: "2000 €" },
+    { articulo: "Art. 4.1", descripcion: "Posesión de arma ilegal", multa: "1000 €" },
+    { articulo: "Art. 4.6", descripcion: "Uso indebido de arma corta ilegal", multa: "2550 €" },
+    ]
+  },
 
+  {
+    "titulo": "Iniciar un tiroteo con arma corta con licencia de armas + abatir a un funcionario + secuestro a un civil",
+    "articulos": [
+    { articulo: "Art. 4.18", descripcion: "Iniciar un tiroteo con un arma corta con licencia", multa: "2450 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 5.28", descripcion: "Secuestro a un civil", multa: "1500 €" },
+    { articulo: "Art. 4.12", descripcion: "Uso indebido de armas cortas con licencia", multa: "2200 € + Retirada de la licencia" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta sin licencia de armas + abatir a un funcionario + secuestro a un civil",
+    "articulos": [
+    { articulo: "Art. 4.17", descripcion: "Iniciar un tiroteo con un arma corta sin licencia", multa: "2300 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 5.28", descripcion: "Secuestro a un civil", multa: "1500 €" },
+    { articulo: "Art. 4.2", descripcion: "Posesión de arma corta sin licencia", multa: "1500 €" },
+    { articulo: "Art. 4.5", descripcion: "Uso indebido de armas cortas sin licencia", multa: "2000 €" },
+    ]
+  },
+  {
+    "titulo": "Iniciar un tiroteo con arma corta ilegal + abatir a un funcionario + secuestro a un civil",
+    "articulos": [
+    { articulo: "Art. 4.17", descripcion: "Iniciar un tiroteo con un arma corta sin licencia", multa: "2300 €" },
+    { articulo: "Art. 5.8", descripcion: "Intento de homicidio con arma corta a un funcionario", multa: "1900 €" },
+    { articulo: "Art. 5.28", descripcion: "Secuestro a un civil", multa: "1500 €" },
+    { articulo: "Art. 4.1", descripcion: "Posesión de arma ilegal", multa: "1000 €" },
+    { articulo: "Art. 4.6", descripcion: "Uso indebido de arma corta ilegal", multa: "2550 €" },
+    ]
+  },
+  {
+    "titulo": "Robo a una empresa + secuestro a un civil",
+    "articulos": [
+    { articulo: "Art. 5.28", descripcion: "Secuestro a un civil", multa: "1500 €" },
+    { articulo: "Art. 2.21", descripcion: "Robo a una empresa", "multa": "1900 €" },
+
+    ]
+  },
+  {
+    "titulo": "Robo a una empresa + secuestro a un civil + con arma corta con licencia",
+    "articulos": [
+    { articulo: "Art. 5.28", descripcion: "Secuestro a un civil", multa: "1500 €" },
+    { articulo: "Art. 2.21", descripcion: "Robo a una empresa", "multa": "1900 €" },
+    { articulo: "Art. 4.12", descripcion: "Uso indebido de armas cortas con licencia", multa: "2200 € + Retirada de la licencia" },
+    ]
+  },
+  {
+    "titulo": "Robo a una empresa + secuestro a un civil + con arma corta sin licencia",
+    "articulos": [
+    { articulo: "Art. 5.28", descripcion: "Secuestro a un civil", multa: "1500 €" },
+    { articulo: "Art. 2.21", descripcion: "Robo a una empresa", "multa": "1900 €" },
+    { articulo: "Art. 4.5", descripcion: "Uso indebido de armas cortas sin licencia", multa: "2000 €" },
+    { articulo: "Art. 4.2", descripcion: "Posesión de arma corta sin licencia", multa: "1500 €" },
+    ]
+  },
+  {
+    "titulo": "Robo a una empresa + secuestro a un civil + con arma corta ilegal",
+    "articulos": [
+    { articulo: "Art. 5.28", descripcion: "Secuestro a un civil", multa: "1500 €" },
+    { articulo: "Art. 2.21", descripcion: "Robo a una empresa", "multa": "1900 €" },
+    { articulo: "Art. 4.6", descripcion: "Uso indebido de arma corta ilegal", multa: "2550 €" },
+    { articulo: "Art. 4.1", descripcion: "Posesión de arma ilegal", multa: "1000 €" },
+    ]
+  },
         ];
+      
+        function addPremultaToClipboard(titulo) {
+    const entrada = pmultas.find(e => e.titulo === titulo);
+
+    entrada.articulos.forEach(multa => {
+        const key = `${multa.articulo} - ${multa.descripcion}: ${multa.multa}`;
+        if (!clipboard1.has(key)) {
+            clipboard1.add(key);
+            clipboard2.add(key);
+            selectedItems.add(key); // Asegúrate de marcar como seleccionado
+        }
+    });
+
+    updateClipboard(); // Actualiza la interfaz del portapapeles
+}
 
         // Función para renderizar los artículos
         function renderItems(query = "") {
@@ -1107,9 +1261,7 @@ const pmultas = [
 
             // Botones de copiar
             cardDiv.innerHTML += `
-                <div class="copy-buttons-container">
-                    <button onclick="copyForMultas('${entrada.titulo}')">Copiar para Multas</button>
-                    <button onclick="copyForArrestos('${entrada.titulo}')">Copiar para Arrestos</button>
+    <button class="blue-button" onclick="addPremultaToClipboard('${entrada.titulo}')">Agregar</button>
                 </div>
             `;
 
@@ -1128,37 +1280,6 @@ function searchItems() {
     renderItems(query);
 }
 
-// Función para copiar los artículos para multas
-function copyForMultas(titulo) {
-    const entrada = pmultas.find(e => e.titulo === titulo);
-    let textToCopy = `/multas poner usuario: razon:\n`;
-
-    entrada.articulos.forEach(multa => {
-        textToCopy += `${multa.articulo} - ${multa.descripcion} - ${multa.multa}\n`;
-    });
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        alert("Contenido copiado al portapapeles (Multas).");
-    }).catch(err => {
-        alert("Error al copiar al portapapeles: " + err);
-    });
-}
-
-// Función para copiar los artículos para arrestos
-function copyForArrestos(titulo) {
-    const entrada = pmultas.find(e => e.titulo === titulo);
-    let textToCopy = `/arrestar usuario: razon:\n`;
-
-    entrada.articulos.forEach(multa => {
-        textToCopy += `${multa.articulo} - ${multa.descripcion} - ${multa.multa}\n`;
-    });
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        alert("Contenido copiado al portapapeles (Arrestos).");
-    }).catch(err => {
-        alert("Error al copiar al portapapeles: " + err);
-    });
-}
 
         // Inicializar con todas las pmultas
         renderItems();

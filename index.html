@@ -355,7 +355,43 @@ body {
 .full-line-button:hover {
     background-color: #0056b3; /* Cambia de color al pasar el ratón */
 }
-
+textarea {
+            width: 99%;
+            height: 200px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+        .button1 {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        #inputText {
+    max-width: 97%;
+    width: 97%;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: none; /* Evita que el usuario cambie manualmente el tamaño */
+    font-family: 'Arial', sans-serif;
+    overflow: hidden; /* Para evitar barras de desplazamiento */
+}
 
 
     </style>
@@ -374,8 +410,16 @@ body {
     <!-- Sección Botones de Navegación -->
      
     <div class="nav-buttons">
+        <button class="full-line-button"onclick="showSection('sumademultas')">Suma de Multas</button>
         <button class="full-line-button"onclick="showSection('multas')">Buscar Multas</button>
         <button class="full-line-button"onclick="showSection('premultas')">PreMultas</button>
+    </div>
+
+    <div id="sumademultas" class="section">
+    <h1>Sumar Multas</h1>
+    <p>Aquí puedes sumar las multas que tengas.</p>
+    <textarea id="inputText" type="text" placeholder="Introduce aquí el texto con las multas..."></textarea>
+    <div class="results" id="totalResult">Introduce las multas para mostrarte el total</div>
     </div>
         <!-- Sección multas -->
         <div id="multas" class="section">
@@ -403,27 +447,27 @@ body {
             
             <div id="results-premultas" class="results"></div>
         </div>
-                    <!-- Portapapeles para mostrar las multas seleccionadas -->
-                    <div id="clipboard1" class="clipboard">
-                        <h2>Portapapeles Multas</h2>
-                        <div id="clipboard-content1"></div>
-                        <button id="copy-button1" class="copy-button">Copiar al portapapeles</button>
-                    </div>
-            
-                    <!-- Portapapeles para mostrar arrestos -->
-                    <div id="clipboard2" class="clipboard">
-                        <h2>Portapapeles Arrestos</h2>
-                        <div id="clipboard-content2"></div>
-                        <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
-                    </div>
-            
-                    <!-- Total de Multas -->
-                    <div id="totals" class="clipboard">
-                        <h2>Total de Multas</h2>
-                        <p id="total-amount">Total: 0 €</p>
-                        <p id="total-count">Artículos seleccionados: 0</p>
-                    </div>
-                    <h2>Hecho por: GERRY</h2>
+            <!-- Portapapeles para mostrar las multas seleccionadas -->
+            <div id="clipboard1" class="clipboard">
+            <h2>Portapapeles Multas</h2>
+            <div id="clipboard-content1"></div>
+            <button id="copy-button1" class="copy-button">Copiar al portapapeles</button>
+            </div>
+
+            <!-- Portapapeles para mostrar arrestos -->
+            <div id="clipboard2" class="clipboard">
+            <h2>Portapapeles Arrestos</h2>
+            <div id="clipboard-content2"></div>
+            <button id="copy-button2" class="copy-button">Copiar al portapapeles</button>
+            </div>
+
+            <!-- Total de Multas -->
+            <div id="totals" class="clipboard">
+            <h2>Total de Multas</h2>
+            <p id="total-amount">Total: 0 €</p>
+            <p id="total-count">Artículos seleccionados: 0</p>
+                </div>
+               <h2>Hecho por: GERRY</h2>
 
     <!-- Script -->
     <script>
@@ -449,12 +493,37 @@ body {
         showSection('multas'); // Mostrar "multas" al cargar la página
     });
 
+// Sumamultas
+const textarea = document.getElementById("inputText");
+textarea.addEventListener("input", function() {
+    const scrollPosition = this.scrollTop; // Guardar el desplazamiento actual
+    this.style.height = "auto"; // Restablecer la altura
+    this.style.height = this.scrollHeight + "px"; // Ajustar al contenido
+    this.scrollTop = scrollPosition; // Restaurar el desplazamiento
+});
+        // Función para calcular el total de las multas
 
+const totalResult = document.getElementById("totalResult");
+
+textarea.addEventListener("input", function () {
+    const text = this.value;
+    const total = calculateTotal(text);
+    totalResult.textContent = `El total es de: ${total}€`;
+});
+
+function calculateTotal(text) {
+    const regex = /(\d+)\s*€/g; // Captura números seguidos de "€"
+    let total = 0;
+    let match;
+    while ((match = regex.exec(text)) !== null) {
+        total += parseInt(match[1], 10); // Convierte a número y suma
+    }
+    return total;
+}
 
 ;
     // Multas
 
-// Datos de ejemplo (multas)
 const multas = [
 { articulo: "Art. 1.1", descripcion: "Uso excesivo de claxon", multa: "200 €" },
 { articulo: "Art. 1.2", descripcion: "Giro indebido", multa: "250 €" },

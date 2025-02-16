@@ -159,7 +159,6 @@ function toggleClipboard(element, multa) {
 
     updateClipboard();
 }
-
 function updateClipboard() {
     clipboardContent1.innerHTML = "/multas poner usuario: razon:<br>"; // Texto fijo con salto de línea
     clipboardContent2.innerHTML = "/arrestar usuario: razon:<br>"; // Texto fijo con salto de línea
@@ -175,18 +174,31 @@ function updateClipboard() {
             if (multa) {
                 const div = document.createElement("div");
                 div.className = "clipboard-item";
-                const amount = selectedAmounts[id] || multa.multa.replace("€", "").trim();
-                div.textContent = `${multa.articulo} - ${multa.descripcion}: ${amount} €`;                
+    
+                // Obtener el monto de la multa
+                let amountText;
+                if (selectedAmounts[id] !== undefined) {
+                    // Caso 3: Multa con importe personalizado
+                    amountText = `${selectedAmounts[id]} €`; // Añadir "€" al final
+                } else {
+                    // Caso 1 y 2: Multas con solo importe o importe + texto adicional
+                    amountText = multa.multa; // Usar el valor tal cual (ya incluye "€" y texto adicional si lo hay)
+                }
+    
+                // Construir el texto final
+                div.textContent = `${multa.articulo} - ${multa.descripcion}: ${amountText}`;
+    
+                // Botón para eliminar la multa del portapapeles
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Eliminar";
                 deleteButton.addEventListener("click", () => {
                     clipboard1.delete(id);
                     clipboard2.delete(id);
                     delete selectedAmounts[id]; // Eliminar la cantidad seleccionada
-                    removeHighlight(id); // Llamar a removeHighlight para quitar el resaltado
+                    removeHighlight(id); // Quitar el resaltado
                     updateClipboard(); // Actualizar el portapapeles
                 });
-
+    
                 div.appendChild(deleteButton);
                 content.appendChild(div); // Agregar el artículo al portapapeles
             }
@@ -229,8 +241,11 @@ copyButton1.addEventListener("click", () => {
     const multasText = Array.from(clipboard1).map(id => {
         const multa = multas.find(m => m.id === id);
         if (multa) {
-            const amount = selectedAmounts[id] || multa.multa.replace(" €", ""); // Eliminar el símbolo de euro si ya está presente
-            return `${multa.articulo} - ${multa.descripcion}: ${amount} €`;
+            // Obtener el monto de la multa
+            const amount = selectedAmounts[id] !== undefined
+                ? `${selectedAmounts[id]} €`  // Si hay un importe personalizado, añadir "€"
+                : multa.multa;               // Si no, usar multa.multa tal cual
+            return `${multa.articulo} - ${multa.descripcion}: ${amount}`;
         }
         return "";
     }).join("\n");
@@ -246,8 +261,11 @@ copyButton2.addEventListener("click", () => {
     const multasText = Array.from(clipboard2).map(id => {
         const multa = multas.find(m => m.id === id);
         if (multa) {
-            const amount = selectedAmounts[id] || multa.multa.replace(" €", ""); // Eliminar el símbolo de euro si ya está presente
-            return `${multa.articulo} - ${multa.descripcion}: ${amount} €`;
+            // Obtener el monto de la multa
+            const amount = selectedAmounts[id] !== undefined
+                ? `${selectedAmounts[id]} €`  // Si hay un importe personalizado, añadir "€"
+                : multa.multa;               // Si no, usar multa.multa tal cual
+            return `${multa.articulo} - ${multa.descripcion}: ${amount}`;
         }
         return "";
     }).join("\n");

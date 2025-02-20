@@ -1,0 +1,15 @@
+Licencia de Uso Restringido - multas-pl
+
+Copyright (c) 2025 GGERRYDEV
+
+Se otorgan los siguientes permisos:  
+- Visualización y estudio del código únicamente con fines personales y educativos.  
+
+**Quedan estrictamente prohibidos:**  
+1. **Reutilización:** No se permite copiar, modificar, fusionar, compilar, o redistribuir el código total o parcialmente.  
+2. **Distribución:** Queda prohibida la publicación de este código en cualquier medio público o privado sin autorización previa.  
+3. **Uso comercial:** No se permite ningún uso comercial, lucrativo o empresarial del código, ya sea directamente o mediante servicios derivados.
+
+**Nota:** El incumplimiento de estos términos podrá dar lugar a acciones legales conforme a la legislación aplicable.
+
+Fecha: 29/01/2025
